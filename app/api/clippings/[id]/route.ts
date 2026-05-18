@@ -10,11 +10,13 @@ export async function PATCH(
 
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { title } = await request.json()
+  const body = await request.json()
+  const allowed = ['title', 'newspaper_name', 'newspaper_date', 'newspaper_page']
+  const updates = Object.fromEntries(Object.entries(body).filter(([k]) => allowed.includes(k)))
 
   const { error } = await supabase
     .from('clippings')
-    .update({ title })
+    .update(updates)
     .eq('id', params.id)
     .eq('user_id', user.id)
 

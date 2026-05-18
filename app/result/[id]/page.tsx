@@ -6,6 +6,7 @@ import Nav from '@/components/Nav'
 import ClueReport from '@/components/results/ClueReport'
 import StoryPath from '@/components/results/StoryPath'
 import ResearchTrail from '@/components/results/ResearchTrail'
+import EditableCitation from '@/components/results/EditableCitation'
 
 const STORY_NAMES: Record<string, string> = {
   'ancestor-life': 'The Ancestor Life Story',
@@ -88,30 +89,12 @@ export default async function ResultPage({ params }: { params: { id: string } })
               </div>
             )}
 
-            {/* Citation card */}
-            <div className="card p-5">
-              <h3 className="font-semibold text-brand-darker text-sm mb-3">Citation</h3>
-              <div className="space-y-2 text-sm text-brand-gray-dark">
-                {clipping.newspaper_name && (
-                  <p>
-                    <span className="font-medium text-brand-darker">Publication:</span>{' '}
-                    {clipping.newspaper_name}
-                  </p>
-                )}
-                {clipping.newspaper_date && (
-                  <p>
-                    <span className="font-medium text-brand-darker">Date:</span>{' '}
-                    {clipping.newspaper_date}
-                  </p>
-                )}
-                {clipping.newspaper_page && (
-                  <p>
-                    <span className="font-medium text-brand-darker">Page:</span>{' '}
-                    {clipping.newspaper_page}
-                  </p>
-                )}
-              </div>
-            </div>
+            <EditableCitation
+              id={clipping.id}
+              newspaperName={clipping.newspaper_name}
+              newspaperDate={clipping.newspaper_date}
+              newspaperPage={clipping.newspaper_page}
+            />
 
             {/* Story types used */}
             {clipping.selected_story_types && clipping.selected_story_types.length > 0 && (
