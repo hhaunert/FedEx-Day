@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import {
   extractNewspaperInfo,
+  transcribeClipping,
   generateClueReport,
   generateResearchTrail,
   generateStory,
@@ -99,9 +100,11 @@ export async function POST(request: NextRequest) {
       imageUrl = publicUrl
     }
 
-    // Step 1: Extract newspaper info + transcription
-    const extracted = await extractNewspaperInfo(base64, mediaType)
-    const transcription = extracted.transcription || ''
+    // Step 1: Extract newspaper info and transcribe (parallel)
+    const [extracted, transcription] = await Promise.all([
+      extractNewspaperInfo(base64, mediaType),
+      transcribeClipping(base64, mediaType),
+    ])
     const finalNewspaperName = newspaperName || extracted.newspaper_name || ''
     const finalNewspaperDate = newspaperDate || extracted.date || ''
     const finalNewspaperPage = newspaperPage || extracted.page || ''

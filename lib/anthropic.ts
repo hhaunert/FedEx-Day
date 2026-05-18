@@ -6,12 +6,12 @@ const anthropic = new Anthropic({
 
 export async function extractNewspaperInfo(imageBase64: string, mediaType: string = 'image/jpeg', filename: string = '') {
   const filenameHint = filename
-    ? `The image filename is: "${filename}". NewspaperArchive filenames often encode the publication name, date, and page — extract those details from the filename first, then verify or supplement with what you can see in the image.`
+    ? `The image filename is: "${filename}". NewspaperArchive filenames often encode the publication name, date, and page — use those details first, then verify with the image.`
     : ''
 
   const response = await anthropic.messages.create({
     model: 'claude-sonnet-4-6',
-    max_tokens: 2048,
+    max_tokens: 512,
     messages: [
       {
         role: 'user',
@@ -26,18 +26,17 @@ export async function extractNewspaperInfo(imageBase64: string, mediaType: strin
           },
           {
             type: 'text',
-            text: `Analyze this newspaper clipping and extract publication details. ${filenameHint}
+            text: `Analyze this newspaper clipping. ${filenameHint}
 
-Return ONLY a valid JSON object with no additional text or markdown:
+Return ONLY a valid JSON object with exactly these four fields:
 {
-  "newspaper_name": "Full name of the newspaper publication (e.g. 'Greensburg New Era')",
+  "newspaper_name": "Full name of the newspaper (e.g. 'Greensburg New Era')",
   "date": "Publication date (e.g. 'May 9, 1912')",
-  "page": "Page number (e.g. '1' or 'Page 1')",
-  "suggested_title": "A short descriptive title for this clipping based on its content, suitable as an analysis name (e.g. 'R.P. Hamilton Obituary, 1912' or 'Smith-Jones Wedding Announcement, 1905' or 'Fire at Mill Street, March 1898'). Use the subject's name and article type if identifiable.",
-  "transcription": "Full verbatim transcription of all article text in the clipping"
+  "page": "Page number (e.g. 'Page 1')",
+  "suggested_title": "A concise title for this analysis based on the article subject and type — include the main person's name and article type (e.g. 'R.P. Hamilton Obituary, 1912' or 'Smith-Jones Wedding, 1905' or 'Mill Street Fire, March 1898'). Never leave this empty — use the most prominent name or topic you can see."
 }
 
-If any field cannot be determined from either the filename or the image, use an empty string "".`,
+Use empty string "" only for newspaper_name, date, and page if truly unknown. suggested_title must always have a value.`,
           },
         ],
       },
@@ -47,17 +46,39 @@ If any field cannot be determined from either the filename or the image, use an 
   const text = response.content[0].type === 'text' ? response.content[0].text : ''
 
   try {
-    // Strip markdown code blocks if present
     const cleaned = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
     return JSON.parse(cleaned)
   } catch {
-    return {
-      newspaper_name: '',
-      date: '',
-      page: '',
-      transcription: text,
-    }
+    return { newspaper_name: '', date: '', page: '', suggested_title: '' }
   }
+}
+
+export async function transcribeClipping(imageBase64: string, mediaType: string = 'image/jpeg') {
+  const response = await anthropic.messages.create({
+    model: 'claude-sonnet-4-6',
+    max_tokens: 4096,
+    messages: [
+      {
+        role: 'user',
+        content: [
+          {
+            type: 'image',
+            source: {
+              type: 'base64',
+              media_type: mediaType as 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp',
+              data: imageBase64,
+            },
+          },
+          {
+            type: 'text',
+            text: 'Transcribe all text in this newspaper clipping verbatim. Return only the transcription text, nothing else.',
+          },
+        ],
+      },
+    ],
+  })
+
+  return response.content[0].type === 'text' ? response.content[0].text : ''
 }
 
 export async function generateClueReport(
