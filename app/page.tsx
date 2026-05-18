@@ -2,8 +2,6 @@ import Link from 'next/link'
 import Image from 'next/image'
 import Nav from '@/components/Nav'
 import { createClient } from '@/lib/supabase/server'
-import { readFileSync } from 'fs'
-import { join } from 'path'
 import FeatureExamples from '@/components/FeatureExamples'
 
 const defaultContent = {
@@ -28,10 +26,6 @@ export default async function HomePage() {
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  const publicDir = join(process.cwd(), 'public')
-  const clueReport = JSON.parse(readFileSync(join(publicDir, 'Clue Report'), 'utf-8'))
-  const researchTrail = JSON.parse(readFileSync(join(publicDir, 'Research Trail'), 'utf-8'))
-  const storyPath = JSON.parse(readFileSync(join(publicDir, 'Story Path'), 'utf-8'))
 
   return (
     <div className="min-h-screen bg-white">
@@ -81,11 +75,7 @@ export default async function HomePage() {
           </p>
         </div>
 
-        <FeatureExamples
-          clueReport={clueReport}
-          researchTrail={researchTrail}
-          storyPath={storyPath}
-        />
+        <FeatureExamples />
       </section>
 
       {/* How it works */}
