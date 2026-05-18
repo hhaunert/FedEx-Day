@@ -34,6 +34,7 @@ export default function AnalyzePage() {
   })
   const [userDetails, setUserDetails] = useState('')
   const [analysisTitle, setAnalysisTitle] = useState('')
+  const [suggestedTitle, setSuggestedTitle] = useState('')
   const [selectedStories, setSelectedStories] = useState<string[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
@@ -110,6 +111,7 @@ export default function AnalyzePage() {
           newspaper_date: data.date || fromFilename.newspaper_date || '',
           newspaper_page: data.page || fromFilename.newspaper_page || '',
         })
+        if (data.suggested_title) setSuggestedTitle(data.suggested_title)
       }
     } catch (err) {
       console.error('Extraction failed:', err)
@@ -241,7 +243,7 @@ export default function AnalyzePage() {
               onChange={setUserDetails}
               title={analysisTitle}
               onTitleChange={setAnalysisTitle}
-              suggestedTitle={[newspaperInfo.newspaper_name, newspaperInfo.newspaper_date].filter(Boolean).join(', ')}
+              suggestedTitle={suggestedTitle || [newspaperInfo.newspaper_name, newspaperInfo.newspaper_date].filter(Boolean).join(', ')}
             />
           )}
           {currentStep === 4 && (

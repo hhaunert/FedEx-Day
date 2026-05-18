@@ -33,6 +33,7 @@ Return ONLY a valid JSON object with no additional text or markdown:
   "newspaper_name": "Full name of the newspaper publication (e.g. 'Greensburg New Era')",
   "date": "Publication date (e.g. 'May 9, 1912')",
   "page": "Page number (e.g. '1' or 'Page 1')",
+  "suggested_title": "A short descriptive title for this clipping based on its content, suitable as an analysis name (e.g. 'R.P. Hamilton Obituary, 1912' or 'Smith-Jones Wedding Announcement, 1905' or 'Fire at Mill Street, March 1898'). Use the subject's name and article type if identifiable.",
   "transcription": "Full verbatim transcription of all article text in the clipping"
 }
 

@@ -33,23 +33,14 @@ export default function StepDetails({ value, onChange, title, onTitleChange, sug
           className="input-field"
           maxLength={100}
         />
-        {!title && (
+        {!title && suggestedTitle && (
           <div className="mt-2 flex flex-wrap gap-2">
-            {suggestedTitle && (
-              <button
-                type="button"
-                onClick={() => onTitleChange(suggestedTitle)}
-                className="inline-flex items-center gap-1 text-xs bg-brand-red/10 text-brand-red hover:bg-brand-red hover:text-white border border-brand-red/30 hover:border-brand-red rounded-full px-3 py-1 transition-colors"
-              >
-                ✦ {suggestedTitle}
-              </button>
-            )}
             <button
               type="button"
-              onClick={() => onTitleChange('R.P. Hamilton Obituary, 1912')}
-              className="inline-flex items-center gap-1 text-xs bg-brand-gray-lighter text-brand-gray-dark hover:bg-brand-gray-border hover:text-brand-darker border border-brand-gray-border rounded-full px-3 py-1 transition-colors"
+              onClick={() => onTitleChange(suggestedTitle)}
+              className="inline-flex items-center gap-1 text-xs bg-brand-red/10 text-brand-red hover:bg-brand-red hover:text-white border border-brand-red/30 hover:border-brand-red rounded-full px-3 py-1 transition-colors"
             >
-              e.g. R.P. Hamilton Obituary, 1912
+              ✦ {suggestedTitle}
             </button>
           </div>
         )}
