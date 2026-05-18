@@ -87,7 +87,7 @@ export default function AnalyzePage() {
   }
 
   const handleSubmit = async () => {
-    if (!selectedFile || selectedStories.length === 0) return
+    if (!selectedFile) return
 
     setIsSubmitting(true)
     setError('')
@@ -121,7 +121,7 @@ export default function AnalyzePage() {
 
   const canProceed = () => {
     if (currentStep === 1) return !!selectedFile
-    if (currentStep === 4) return selectedStories.length > 0
+    if (currentStep === 4) return true
     return true
   }
 

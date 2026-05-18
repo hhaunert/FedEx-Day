@@ -118,11 +118,6 @@ export default function StepStoryPicker({ selected, onChange }: StepStoryPickerP
         })}
       </div>
 
-      {selected.length === 0 && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg px-4 py-3 text-sm text-yellow-800">
-          Please select at least one story type to continue.
-        </div>
-      )}
     </div>
   )
 }
