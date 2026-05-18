@@ -1,7 +1,7 @@
 <svg
-  width="1600"
+  width="1460"
   height="260"
-  viewBox="0 0 1600 260"
+  viewBox="0 0 1460 260"
   fill="none"
   xmlns="http://www.w3.org/2000/svg"
   role="img"
@@ -92,5 +92,5 @@
 
   <!-- Wordmark -->
   <text x="260" y="165" font-size="108" class="word-dark">Newspaper</text>
-  <text x="980" y="165" font-size="108" class="word-red">Detective</text>
+  <text x="870" y="165" font-size="108" class="word-red">Detective</text>
 </svg>
