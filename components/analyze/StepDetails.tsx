@@ -39,7 +39,7 @@ export default function StepDetails({ value, onChange, title, onTitleChange, sug
             type="text"
             value={title}
             onChange={(e) => onTitleChange(e.target.value)}
-            placeholder="e.g. R.P. Hamilton Obituary, 1912"
+            placeholder="Name this analysis..."
             className="input-field"
             maxLength={100}
           />
