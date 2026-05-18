@@ -24,25 +24,34 @@ export default function StepDetails({ value, onChange, title, onTitleChange, sug
         <label htmlFor="analysis_title" className="label">
           Analysis Name <span className="text-brand-gray-mid font-normal">(optional)</span>
         </label>
-        {suggestedTitle && !title ? (
-          <button
-            type="button"
-            onClick={() => onTitleChange(suggestedTitle)}
-            className="w-full text-left input-field text-brand-gray-mid hover:border-brand-red hover:text-brand-darker transition-colors group"
-          >
-            <span className="text-brand-gray-border group-hover:text-brand-gray-mid text-xs block mb-0.5">Suggested — click to use</span>
-            {suggestedTitle}
-          </button>
-        ) : (
-          <input
-            id="analysis_title"
-            type="text"
-            value={title}
-            onChange={(e) => onTitleChange(e.target.value)}
-            placeholder="Name this analysis..."
-            className="input-field"
-            maxLength={100}
-          />
+        <input
+          id="analysis_title"
+          type="text"
+          value={title}
+          onChange={(e) => onTitleChange(e.target.value)}
+          placeholder="Name this analysis..."
+          className="input-field"
+          maxLength={100}
+        />
+        {!title && (
+          <div className="mt-2 flex flex-wrap gap-2">
+            {suggestedTitle && (
+              <button
+                type="button"
+                onClick={() => onTitleChange(suggestedTitle)}
+                className="inline-flex items-center gap-1 text-xs bg-brand-red/10 text-brand-red hover:bg-brand-red hover:text-white border border-brand-red/30 hover:border-brand-red rounded-full px-3 py-1 transition-colors"
+              >
+                ✦ {suggestedTitle}
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={() => onTitleChange('R.P. Hamilton Obituary, 1912')}
+              className="inline-flex items-center gap-1 text-xs bg-brand-gray-lighter text-brand-gray-dark hover:bg-brand-gray-border hover:text-brand-darker border border-brand-gray-border rounded-full px-3 py-1 transition-colors"
+            >
+              e.g. R.P. Hamilton Obituary, 1912
+            </button>
+          </div>
         )}
         <p className="text-xs text-brand-gray-mid mt-1.5">
           This name appears on your dashboard to help you find this analysis later.
