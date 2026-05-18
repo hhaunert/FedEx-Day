@@ -6,8 +6,7 @@ import FeatureExamples from '@/components/FeatureExamples'
 
 const defaultContent = {
   hero_headline: 'Uncover the Stories Hidden in Your Newspaper Clippings',
-  hero_subheadline:
-    'AI-powered analysis transforms old newspaper clippings into rich family histories, research trails, and compelling ancestor stories.',
+  hero_subheadline: 'Stop wondering who they were. Start finding out.',
   cta_primary: 'Crack Your First Case →',
   feature_clue_report_title: 'Clue Report',
   feature_clue_report_desc:
