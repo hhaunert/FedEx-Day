@@ -9,6 +9,7 @@ import ResearchTrail from '@/components/results/ResearchTrail'
 import EditableCitation from '@/components/results/EditableCitation'
 import EditableDetails from '@/components/results/EditableDetails'
 import AddStories from '@/components/results/AddStories'
+import ExpandableSection from '@/components/results/ExpandableSection'
 
 const STORY_NAMES: Record<string, string> = {
   'ancestor-life': 'The Ancestor Life Story',
@@ -125,39 +126,43 @@ export default async function ResultPage({ params }: { params: { id: string } })
           <div className="lg:col-span-2 space-y-6">
             {/* Transcription */}
             {clipping.transcription && (
-              <div className="card p-6">
-                <h2 className="font-serif text-xl font-bold text-brand-darker mb-4 flex items-center gap-2">
-                  <span className="w-1 h-6 bg-brand-red rounded-full inline-block"></span>
-                  Transcription
-                </h2>
+              <ExpandableSection
+                title="Transcription"
+                subtitle="Full text extracted from the clipping"
+                buttonLabel="Read Text"
+              >
                 <div className="bg-brand-gray-light rounded-lg p-4">
                   <p className="text-sm text-brand-gray-dark leading-relaxed whitespace-pre-wrap font-serif">
                     {clipping.transcription}
                   </p>
                 </div>
-              </div>
+              </ExpandableSection>
             )}
 
             {/* Clue Report */}
             {clipping.clue_report && (
-              <div className="card p-6">
-                <h2 className="font-serif text-xl font-bold text-brand-darker mb-5 flex items-center gap-2">
-                  <span className="w-1 h-6 bg-brand-red rounded-full inline-block"></span>
-                  Clue Report
-                </h2>
+              <ExpandableSection
+                title="Clue Report"
+                subtitle={[
+                  clipping.clue_report.people?.length && `${clipping.clue_report.people.length} ${clipping.clue_report.people.length === 1 ? 'person' : 'people'} identified`,
+                  clipping.clue_report.places?.length && `${clipping.clue_report.places.length} ${clipping.clue_report.places.length === 1 ? 'place' : 'places'} found`,
+                  clipping.clue_report.research_value && `${clipping.clue_report.research_value} research value`,
+                ].filter(Boolean).join(' · ') || 'Genealogical facts extracted from the clipping'}
+                buttonLabel="View Clues"
+              >
                 <ClueReport data={clipping.clue_report} />
-              </div>
+              </ExpandableSection>
             )}
 
             {/* Story Path */}
-            {clipping.story_path && (
-              <div className="card p-6">
-                <h2 className="font-serif text-xl font-bold text-brand-darker mb-5 flex items-center gap-2">
-                  <span className="w-1 h-6 bg-brand-red rounded-full inline-block"></span>
-                  Story Path
-                </h2>
+            {clipping.story_path?.stories?.length > 0 && (
+              <ExpandableSection
+                title="Story Path"
+                subtitle={`${clipping.story_path.stories.length} ${clipping.story_path.stories.length === 1 ? 'story' : 'stories'} generated`}
+                buttonLabel="Read Stories"
+              >
                 <StoryPath data={clipping.story_path} />
-              </div>
+              </ExpandableSection>
             )}
 
             <AddStories
@@ -167,13 +172,16 @@ export default async function ResultPage({ params }: { params: { id: string } })
 
             {/* Research Trail */}
             {clipping.research_trail && (
-              <div className="card p-6">
-                <h2 className="font-serif text-xl font-bold text-brand-darker mb-5 flex items-center gap-2">
-                  <span className="w-1 h-6 bg-brand-red rounded-full inline-block"></span>
-                  Research Trail
-                </h2>
+              <ExpandableSection
+                title="Research Trail"
+                subtitle={[
+                  clipping.research_trail.searches?.length && `${clipping.research_trail.searches.length} searches suggested`,
+                  clipping.research_trail.tips?.length && `${clipping.research_trail.tips.length} tips`,
+                ].filter(Boolean).join(' · ') || 'Newspaper search recommendations'}
+                buttonLabel="View Trail"
+              >
                 <ResearchTrail data={clipping.research_trail} />
-              </div>
+              </ExpandableSection>
             )}
           </div>
         </div>
