@@ -5,7 +5,7 @@ interface LogoProps {
   href?: string
 }
 
-const SCALE = { sm: 0.6, md: 0.8, lg: 1.2 }
+const SCALE = { sm: 0.9, md: 1.2, lg: 1.8 }
 
 export default function Logo({ size = 'md', href = '/' }: LogoProps) {
   const scale = SCALE[size]
