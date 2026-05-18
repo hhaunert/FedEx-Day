@@ -172,7 +172,7 @@ export async function generateStory(
     messages: [
       {
         role: 'user',
-        content: `Clue Report:\n${JSON.stringify(clueReport, null, 2)}\n\nNewspaper Clipping Transcription:\n${transcription}\n\nAdditional known details from researcher:\n${userDetails || 'None provided'}${stateContext}`,
+        content: `Clue Report:\n${JSON.stringify(clueReport, null, 2)}\n\nNewspaper Clipping Transcription:\n${transcription}\n\nAdditional known details from researcher:\n${userDetails || 'None provided'}${stateContext}\n\nIMPORTANT: Write no more than 150-200 words total. Be vivid and concise.`,
       },
     ],
   })
