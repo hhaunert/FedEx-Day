@@ -71,19 +71,25 @@ export async function POST(request: NextRequest) {
 
 
     // Convert image to base64
-    const buffer = await imageFile.arrayBuffer()
-    const base64 = Buffer.from(buffer).toString('base64')
+    const arrayBuffer = await imageFile.arrayBuffer()
+    const uint8Array = new Uint8Array(arrayBuffer)
+    const base64 = Buffer.from(arrayBuffer).toString('base64')
     const mediaType = imageFile.type || 'image/jpeg'
 
     // Upload image to Supabase storage
     let imageUrl = ''
-    const fileName = `${user.id}/${Date.now()}-${imageFile.name}`
+    const safeFileName = imageFile.name.replace(/[^a-zA-Z0-9._-]/g, '_')
+    const fileName = `${user.id}/${Date.now()}-${safeFileName}`
     const { data: uploadData, error: uploadError } = await supabase.storage
       .from('clippings')
-      .upload(fileName, buffer, {
+      .upload(fileName, uint8Array, {
         contentType: mediaType,
-        upsert: false,
+        upsert: true,
       })
+
+    if (uploadError) {
+      console.error('Storage upload error:', uploadError)
+    }
 
     if (!uploadError && uploadData) {
       const { data: { publicUrl } } = supabase.storage
