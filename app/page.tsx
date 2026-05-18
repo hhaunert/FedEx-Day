@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Nav from '@/components/Nav'
+import { createClient } from '@/lib/supabase/server'
 
 const defaultContent = {
   hero_headline: 'Uncover the Stories Hidden in Your Newspaper Clippings',
@@ -39,6 +40,8 @@ function FeatureCard({
 
 export default async function HomePage() {
   const content = defaultContent
+  const supabase = createClient()
+  const { data: { user } } = await supabase.auth.getUser()
 
   return (
     <div className="min-h-screen bg-white">
@@ -154,7 +157,11 @@ export default async function HomePage() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-brand-gray-mid">
           <p>© {new Date().getFullYear()} NewspaperArchive. All rights reserved.</p>
           <div className="flex gap-6">
-            <Link href="/auth" className="hover:text-brand-darker transition-colors">Sign In</Link>
+            {user ? (
+              <Link href="/dashboard" className="hover:text-brand-darker transition-colors">Dashboard</Link>
+            ) : (
+              <Link href="/auth" className="hover:text-brand-darker transition-colors">Sign In</Link>
+            )}
             <Link href="/analyze" className="hover:text-brand-darker transition-colors">Analyze</Link>
           </div>
         </div>
