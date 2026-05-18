@@ -103,21 +103,6 @@ export default async function ResultPage({ params }: { params: { id: string } })
 
           {/* Right column: reports */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Transcription */}
-            {clipping.transcription && (
-              <ExpandableSection
-                title="Transcription"
-                subtitle="Full text extracted from the clipping"
-                buttonLabel="Read Text"
-              >
-                <div className="bg-brand-gray-light rounded-lg p-4">
-                  <p className="text-sm text-brand-gray-dark leading-relaxed whitespace-pre-wrap font-serif">
-                    {clipping.transcription}
-                  </p>
-                </div>
-              </ExpandableSection>
-            )}
-
             {/* Clue Report */}
             {clipping.clue_report && (
               <ExpandableSection
@@ -130,6 +115,20 @@ export default async function ResultPage({ params }: { params: { id: string } })
                 buttonLabel="View Clues"
               >
                 <ClueReport data={clipping.clue_report} />
+              </ExpandableSection>
+            )}
+
+            {/* Research Trail */}
+            {clipping.research_trail && (
+              <ExpandableSection
+                title="Research Trail"
+                subtitle={[
+                  clipping.research_trail.searches?.length && `${clipping.research_trail.searches.length} searches suggested`,
+                  clipping.research_trail.tips?.length && `${clipping.research_trail.tips.length} tips`,
+                ].filter(Boolean).join(' · ') || 'Newspaper search recommendations'}
+                buttonLabel="View Trail"
+              >
+                <ResearchTrail data={clipping.research_trail} />
               </ExpandableSection>
             )}
 
@@ -149,17 +148,18 @@ export default async function ResultPage({ params }: { params: { id: string } })
               existingSlugs={clipping.selected_story_types || []}
             />
 
-            {/* Research Trail */}
-            {clipping.research_trail && (
+            {/* Transcription */}
+            {clipping.transcription && (
               <ExpandableSection
-                title="Research Trail"
-                subtitle={[
-                  clipping.research_trail.searches?.length && `${clipping.research_trail.searches.length} searches suggested`,
-                  clipping.research_trail.tips?.length && `${clipping.research_trail.tips.length} tips`,
-                ].filter(Boolean).join(' · ') || 'Newspaper search recommendations'}
-                buttonLabel="View Trail"
+                title="Transcription"
+                subtitle="Full text extracted from the clipping"
+                buttonLabel="Read Text"
               >
-                <ResearchTrail data={clipping.research_trail} />
+                <div className="bg-brand-gray-light rounded-lg p-4">
+                  <p className="text-sm text-brand-gray-dark leading-relaxed whitespace-pre-wrap font-serif">
+                    {clipping.transcription}
+                  </p>
+                </div>
               </ExpandableSection>
             )}
           </div>
