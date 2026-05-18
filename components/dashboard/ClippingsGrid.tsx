@@ -44,7 +44,7 @@ function EditableTitle({ id, initialTitle, onSave }: { id: string; initialTitle:
 
   if (editing) {
     return (
-      <div className="flex items-center gap-1 mt-1" onClick={(e) => e.preventDefault()}>
+      <div className="flex items-center gap-1" onClick={(e) => e.preventDefault()}>
         <input
           ref={inputRef}
           type="text"
@@ -53,7 +53,7 @@ function EditableTitle({ id, initialTitle, onSave }: { id: string; initialTitle:
           onKeyDown={handleKeyDown}
           onBlur={save}
           maxLength={100}
-          className="text-xs border border-brand-red rounded px-2 py-0.5 w-full focus:outline-none"
+          className="text-sm font-semibold border border-brand-red rounded px-2 py-0.5 w-full focus:outline-none"
         />
         {saving && <span className="text-xs text-brand-gray-mid flex-shrink-0">Saving...</span>}
       </div>
@@ -62,12 +62,12 @@ function EditableTitle({ id, initialTitle, onSave }: { id: string; initialTitle:
 
   return (
     <div
-      className="flex items-center gap-1 group/title cursor-pointer mt-1"
+      className="flex items-center gap-1 group/title cursor-pointer"
       onClick={(e) => { e.preventDefault(); setEditing(true) }}
       title="Click to edit name"
     >
-      <p className="text-xs text-brand-gray-mid truncate flex-1">
-        {value || <span className="italic text-brand-gray-border">Add a name...</span>}
+      <p className="font-semibold text-brand-darker text-sm truncate flex-1 hover:text-brand-red transition-colors">
+        {value || <span className="italic font-normal text-brand-gray-border">Add a name...</span>}
       </p>
       <svg className="w-3 h-3 text-brand-gray-border opacity-0 group-hover/title:opacity-100 flex-shrink-0 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -161,11 +161,9 @@ export default function ClippingsGrid({ clippings: initial }: { clippings: Clipp
             />
 
             <Link href={`/result/${clipping.id}`}>
-              <p className="font-semibold text-brand-darker text-sm truncate hover:text-brand-red transition-colors mt-1">
+              <p className="text-brand-gray-mid text-xs mt-1 truncate">
                 {clipping.newspaper_name || 'Unknown Newspaper'}
-              </p>
-              <p className="text-brand-gray-mid text-xs mt-0.5 truncate">
-                {clipping.newspaper_date || 'Date unknown'}
+                {clipping.newspaper_date ? ` · ${clipping.newspaper_date}` : ''}
               </p>
             </Link>
 
