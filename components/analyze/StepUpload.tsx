@@ -8,8 +8,20 @@ interface StepUploadProps {
   isExtracting?: boolean
 }
 
+const SUPPORTED_TYPES = ['image/jpeg', 'image/png', 'image/webp']
+
 export default function StepUpload({ onFileSelect, selectedFile, isExtracting }: StepUploadProps) {
   const [dragActive, setDragActive] = useState(false)
+  const [fileError, setFileError] = useState<string | null>(null)
+
+  const validateAndSelect = useCallback((file: File) => {
+    if (!SUPPORTED_TYPES.includes(file.type)) {
+      setFileError(`That file type isn't supported. Please upload a JPG, PNG, or WebP image of your clipping.`)
+      return
+    }
+    setFileError(null)
+    onFileSelect(file)
+  }, [onFileSelect])
 
   const handleDrag = useCallback((e: React.DragEvent) => {
     e.preventDefault()
@@ -28,18 +40,14 @@ export default function StepUpload({ onFileSelect, selectedFile, isExtracting }:
       setDragActive(false)
 
       const file = e.dataTransfer.files?.[0]
-      if (file && file.type.startsWith('image/')) {
-        onFileSelect(file)
-      }
+      if (file) validateAndSelect(file)
     },
-    [onFileSelect]
+    [validateAndSelect]
   )
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (file) {
-      onFileSelect(file)
-    }
+    if (file) validateAndSelect(file)
   }
 
   return (
@@ -126,7 +134,16 @@ export default function StepUpload({ onFileSelect, selectedFile, isExtracting }:
         )}
       </div>
 
-      {selectedFile && (
+      {fileError && (
+        <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3 text-sm text-red-700 flex items-start gap-2">
+          <svg className="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+          </svg>
+          {fileError}
+        </div>
+      )}
+
+      {selectedFile && !fileError && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 text-sm text-blue-700">
           <strong>Tip:</strong> For best results, use a clear, well-lit photo with the full article text visible.
         </div>
