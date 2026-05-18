@@ -62,7 +62,7 @@ interface FeatureCardProps {
 
 function FeatureCard({ icon, title, description, exampleKey, onExampleClick }: FeatureCardProps) {
   return (
-    <div className="card p-4 sm:p-6 md:p-8 flex flex-col">
+    <div className="card p-4 sm:p-6 md:p-8 flex flex-col transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 hover:border-brand-red/30">
       <div className="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center mb-5">
         {icon}
       </div>
