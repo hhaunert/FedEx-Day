@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 interface Props {
   id: string
@@ -10,28 +11,52 @@ interface Props {
 }
 
 export default function EditableCitation({ id, newspaperName, newspaperDate, newspaperPage }: Props) {
+  const router = useRouter()
   const [editing, setEditing] = useState(false)
   const [saving, setSaving] = useState(false)
-  const [name, setName] = useState(newspaperName || '')
-  const [date, setDate] = useState(newspaperDate || '')
-  const [page, setPage] = useState(newspaperPage || '')
+  const [error, setError] = useState(false)
 
-  const save = async () => {
-    setSaving(true)
-    await fetch(`/api/clippings/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ newspaper_name: name, newspaper_date: date, newspaper_page: page }),
-    })
-    setSaving(false)
-    setEditing(false)
+  // Saved values (what's actually in the DB)
+  const [saved, setSaved] = useState({
+    name: newspaperName || '',
+    date: newspaperDate || '',
+    page: newspaperPage || '',
+  })
+
+  // Draft values while editing
+  const [draft, setDraft] = useState(saved)
+
+  const openEdit = () => {
+    setDraft(saved)
+    setError(false)
+    setEditing(true)
   }
 
   const cancel = () => {
-    setName(newspaperName || '')
-    setDate(newspaperDate || '')
-    setPage(newspaperPage || '')
+    setDraft(saved)
     setEditing(false)
+  }
+
+  const save = async () => {
+    setSaving(true)
+    setError(false)
+    const res = await fetch(`/api/clippings/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        newspaper_name: draft.name,
+        newspaper_date: draft.date,
+        newspaper_page: draft.page,
+      }),
+    })
+    setSaving(false)
+    if (res.ok) {
+      setSaved(draft)
+      setEditing(false)
+      router.refresh()
+    } else {
+      setError(true)
+    }
   }
 
   return (
@@ -40,7 +65,7 @@ export default function EditableCitation({ id, newspaperName, newspaperDate, new
         <h3 className="font-semibold text-brand-darker text-sm">Citation</h3>
         {!editing && (
           <button
-            onClick={() => setEditing(true)}
+            onClick={openEdit}
             className="flex items-center gap-1 text-xs text-brand-gray-mid hover:text-brand-red transition-colors"
           >
             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -57,18 +82,19 @@ export default function EditableCitation({ id, newspaperName, newspaperDate, new
             <label className="text-xs font-medium text-brand-darker block mb-1">Publication</label>
             <input
               type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={draft.name}
+              onChange={(e) => setDraft((d) => ({ ...d, name: e.target.value }))}
               className="w-full text-sm border border-brand-gray-border rounded-lg px-3 py-1.5 focus:outline-none focus:border-brand-red"
               placeholder="Newspaper name"
+              autoFocus
             />
           </div>
           <div>
             <label className="text-xs font-medium text-brand-darker block mb-1">Date</label>
             <input
               type="text"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
+              value={draft.date}
+              onChange={(e) => setDraft((d) => ({ ...d, date: e.target.value }))}
               className="w-full text-sm border border-brand-gray-border rounded-lg px-3 py-1.5 focus:outline-none focus:border-brand-red"
               placeholder="e.g. May 9, 1912"
             />
@@ -77,12 +103,15 @@ export default function EditableCitation({ id, newspaperName, newspaperDate, new
             <label className="text-xs font-medium text-brand-darker block mb-1">Page</label>
             <input
               type="text"
-              value={page}
-              onChange={(e) => setPage(e.target.value)}
+              value={draft.page}
+              onChange={(e) => setDraft((d) => ({ ...d, page: e.target.value }))}
               className="w-full text-sm border border-brand-gray-border rounded-lg px-3 py-1.5 focus:outline-none focus:border-brand-red"
               placeholder="e.g. Page 1"
             />
           </div>
+          {error && (
+            <p className="text-xs text-red-600">Failed to save. Please try again.</p>
+          )}
           <div className="flex gap-2 pt-1">
             <button
               onClick={save}
@@ -93,7 +122,8 @@ export default function EditableCitation({ id, newspaperName, newspaperDate, new
             </button>
             <button
               onClick={cancel}
-              className="text-xs px-3 py-1.5 rounded-lg border border-brand-gray-border text-brand-gray-dark hover:border-brand-darker transition-colors"
+              disabled={saving}
+              className="text-xs px-3 py-1.5 rounded-lg border border-brand-gray-border text-brand-gray-dark hover:border-brand-darker transition-colors disabled:opacity-50"
             >
               Cancel
             </button>
@@ -103,15 +133,15 @@ export default function EditableCitation({ id, newspaperName, newspaperDate, new
         <div className="space-y-2 text-sm text-brand-gray-dark">
           <p>
             <span className="font-medium text-brand-darker">Publication:</span>{' '}
-            {name || <span className="italic text-brand-gray-border">Unknown</span>}
+            {saved.name || <span className="italic text-brand-gray-border">Unknown</span>}
           </p>
           <p>
             <span className="font-medium text-brand-darker">Date:</span>{' '}
-            {date || <span className="italic text-brand-gray-border">Unknown</span>}
+            {saved.date || <span className="italic text-brand-gray-border">Unknown</span>}
           </p>
           <p>
             <span className="font-medium text-brand-darker">Page:</span>{' '}
-            {page || <span className="italic text-brand-gray-border">Unknown</span>}
+            {saved.page || <span className="italic text-brand-gray-border">Unknown</span>}
           </p>
         </div>
       )}
