@@ -1,5 +1,7 @@
 'use client'
 
+import { useState } from 'react'
+
 interface Story {
   slug: string
   content: string
@@ -166,6 +168,34 @@ function StoryContent({ content }: { content: string }) {
   return <>{elements}</>
 }
 
+function CopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false)
+  const copy = async () => {
+    // Strip markdown for plain text copy
+    const plain = text
+      .replace(/#{1,6}\s+/g, '')
+      .replace(/\*\*([^*]+)\*\*/g, '$1')
+      .replace(/\*([^*]+)\*/g, '$1')
+      .replace(/^[-*•]\s+/gm, '• ')
+    await navigator.clipboard.writeText(plain)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+  return (
+    <button
+      onClick={copy}
+      className="flex items-center gap-1 text-xs text-brand-gray-mid hover:text-brand-red transition-colors ml-auto"
+      title="Copy story"
+    >
+      {copied ? (
+        <><svg className="w-3.5 h-3.5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg><span className="text-green-600">Copied!</span></>
+      ) : (
+        <><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>Copy</>
+      )}
+    </button>
+  )
+}
+
 export default function StoryPath({ data }: { data: StoryPathData }) {
   const stories = data?.stories || []
 
@@ -184,6 +214,7 @@ export default function StoryPath({ data }: { data: StoryPathData }) {
             <h3 className="font-serif text-xl font-bold text-brand-darker">
               {STORY_NAMES[story.slug] || story.slug}
             </h3>
+            <CopyButton text={story.content} />
           </div>
           <div className="pl-10">
             <StoryContent content={story.content} />

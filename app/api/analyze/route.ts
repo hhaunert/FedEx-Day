@@ -66,6 +66,7 @@ export async function POST(request: NextRequest) {
     const userDetails = formData.get('user_details') as string || ''
     const title = formData.get('title') as string || ''
     const storyTypeSlugs = formData.getAll('story_types') as string[]
+    const storyLength = (formData.get('story_length') as string || 'brief') as 'brief' | 'standard' | 'detailed'
 
     if (!imageFile) {
       return NextResponse.json({ error: 'No image provided' }, { status: 400 })
@@ -155,7 +156,8 @@ export async function POST(request: NextRequest) {
           userDetails,
           storyPromptsMap[slug] || DEFAULT_STORY_PROMPTS[slug] || '',
           slug,
-          newspaperState
+          newspaperState,
+          storyLength
         )
       ),
     ])

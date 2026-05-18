@@ -45,12 +45,20 @@ const STORY_TYPES = [
   },
 ]
 
+const LENGTHS = [
+  { value: 'brief', label: 'Brief', description: '~150 words' },
+  { value: 'standard', label: 'Standard', description: '~300 words' },
+  { value: 'detailed', label: 'Detailed', description: '~500 words' },
+] as const
+
 interface StepStoryPickerProps {
   selected: string[]
   onChange: (selected: string[]) => void
+  storyLength: 'brief' | 'standard' | 'detailed'
+  onLengthChange: (length: 'brief' | 'standard' | 'detailed') => void
 }
 
-export default function StepStoryPicker({ selected, onChange }: StepStoryPickerProps) {
+export default function StepStoryPicker({ selected, onChange, storyLength, onLengthChange }: StepStoryPickerProps) {
   const toggle = (slug: string) => {
     if (selected.includes(slug)) {
       onChange(selected.filter((s) => s !== slug))
@@ -68,6 +76,27 @@ export default function StepStoryPicker({ selected, onChange }: StepStoryPickerP
         <p className="text-brand-gray-dark">
           Optional — select up to 3 story types and we&apos;ll write them for you.
         </p>
+      </div>
+
+      <div>
+        <label className="label mb-2">Story Length</label>
+        <div className="flex gap-2">
+          {LENGTHS.map((l) => (
+            <button
+              key={l.value}
+              type="button"
+              onClick={() => onLengthChange(l.value)}
+              className={`flex-1 py-2 px-3 rounded-lg border-2 text-sm transition-all ${
+                storyLength === l.value
+                  ? 'border-brand-red bg-red-50 text-brand-darker'
+                  : 'border-brand-gray-border text-brand-gray-dark hover:border-brand-red'
+              }`}
+            >
+              <div className="font-semibold">{l.label}</div>
+              <div className="text-xs text-brand-gray-mid">{l.description}</div>
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="flex items-center gap-3">

@@ -21,7 +21,7 @@ export async function POST(
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-    const { slugs } = await request.json()
+    const { slugs, storyLength = 'brief' } = await request.json()
     if (!slugs?.length) return NextResponse.json({ error: 'No story types provided' }, { status: 400 })
 
     const { data: clipping, error: fetchError } = await supabase
@@ -54,7 +54,8 @@ export async function POST(
           clipping.user_details || '',
           storyPromptsMap[slug] || DEFAULT_STORY_PROMPTS[slug] || '',
           slug,
-          clipping.newspaper_state || ''
+          clipping.newspaper_state || '',
+          storyLength as 'brief' | 'standard' | 'detailed'
         )
       )
     )

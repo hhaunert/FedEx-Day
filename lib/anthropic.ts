@@ -156,15 +156,23 @@ export async function generateResearchTrail(
   }
 }
 
+const STORY_LENGTH_INSTRUCTIONS: Record<string, string> = {
+  brief: 'Write 150–200 words maximum. Be vivid and concise.',
+  standard: 'Write 300–400 words. Balance detail with readability.',
+  detailed: 'Write 500–600 words. Be rich and thorough.',
+}
+
 export async function generateStory(
   transcription: string,
   clueReport: object,
   userDetails: string,
   storyPrompt: string,
   storyType: string,
-  newspaperState?: string
+  newspaperState?: string,
+  storyLength: 'brief' | 'standard' | 'detailed' = 'brief'
 ) {
   const stateContext = newspaperState ? `\nPublication state: ${newspaperState}` : ''
+  const lengthInstruction = STORY_LENGTH_INSTRUCTIONS[storyLength]
   const response = await anthropic.messages.create({
     model: 'claude-sonnet-4-6',
     max_tokens: 4096,
@@ -172,7 +180,7 @@ export async function generateStory(
     messages: [
       {
         role: 'user',
-        content: `Clue Report:\n${JSON.stringify(clueReport, null, 2)}\n\nNewspaper Clipping Transcription:\n${transcription}\n\nAdditional known details from researcher:\n${userDetails || 'None provided'}${stateContext}\n\nIMPORTANT: Write no more than 150-200 words total. Be vivid and concise.`,
+        content: `Clue Report:\n${JSON.stringify(clueReport, null, 2)}\n\nNewspaper Clipping Transcription:\n${transcription}\n\nAdditional known details from researcher:\n${userDetails || 'None provided'}${stateContext}\n\nIMPORTANT: ${lengthInstruction}`,
       },
     ],
   })

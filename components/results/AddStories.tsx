@@ -22,8 +22,15 @@ export default function AddStories({ id, existingSlugs }: Props) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [selected, setSelected] = useState<string[]>([])
+  const [storyLength, setStoryLength] = useState<'brief' | 'standard' | 'detailed'>('brief')
   const [generating, setGenerating] = useState(false)
   const [error, setError] = useState('')
+
+  const LENGTHS = [
+    { value: 'brief' as const, label: 'Brief', description: '~150 words' },
+    { value: 'standard' as const, label: 'Standard', description: '~300 words' },
+    { value: 'detailed' as const, label: 'Detailed', description: '~500 words' },
+  ]
 
   const available = STORY_TYPES.filter((s) => !existingSlugs.includes(s.slug))
 
@@ -40,7 +47,7 @@ export default function AddStories({ id, existingSlugs }: Props) {
     const res = await fetch(`/api/clippings/${id}/stories`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ slugs: selected }),
+      body: JSON.stringify({ slugs: selected, storyLength }),
     })
     setGenerating(false)
     if (res.ok) {
@@ -78,6 +85,27 @@ export default function AddStories({ id, existingSlugs }: Props) {
         </button>
       ) : (
         <div className="ml-3 space-y-4">
+          <div>
+            <label className="text-xs font-medium text-brand-darker block mb-2">Story Length</label>
+            <div className="flex gap-2">
+              {LENGTHS.map((l) => (
+                <button
+                  key={l.value}
+                  type="button"
+                  onClick={() => setStoryLength(l.value)}
+                  disabled={generating}
+                  className={`flex-1 py-2 px-3 rounded-lg border-2 text-sm transition-all disabled:opacity-50 ${
+                    storyLength === l.value
+                      ? 'border-brand-red bg-red-50 text-brand-darker'
+                      : 'border-brand-gray-border text-brand-gray-dark hover:border-brand-red'
+                  }`}
+                >
+                  <div className="font-semibold">{l.label}</div>
+                  <div className="text-xs text-brand-gray-mid">{l.description}</div>
+                </button>
+              ))}
+            </div>
+          </div>
           <div className="grid sm:grid-cols-2 gap-3">
             {available.map((story) => {
               const isSelected = selected.includes(story.slug)

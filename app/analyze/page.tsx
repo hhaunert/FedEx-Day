@@ -38,6 +38,7 @@ export default function AnalyzePage() {
   const [analysisTitle, setAnalysisTitle] = useState('')
   const [suggestedTitle, setSuggestedTitle] = useState('')
   const [selectedStories, setSelectedStories] = useState<string[]>([])
+  const [storyLength, setStoryLength] = useState<'brief' | 'standard' | 'detailed'>('brief')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
 
@@ -161,6 +162,7 @@ export default function AnalyzePage() {
       formData.append('user_details', userDetails)
       formData.append('title', analysisTitle)
       selectedStories.forEach((s) => formData.append('story_types', s))
+      formData.append('story_length', storyLength)
 
       const response = await fetch('/api/analyze', {
         method: 'POST',
@@ -252,7 +254,12 @@ export default function AnalyzePage() {
             />
           )}
           {currentStep === 4 && (
-            <StepStoryPicker selected={selectedStories} onChange={setSelectedStories} />
+            <StepStoryPicker
+              selected={selectedStories}
+              onChange={setSelectedStories}
+              storyLength={storyLength}
+              onLengthChange={setStoryLength}
+            />
           )}
 
           {error && (
