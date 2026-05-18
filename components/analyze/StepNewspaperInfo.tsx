@@ -1,9 +1,22 @@
 'use client'
 
+const US_STATES = [
+  'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado',
+  'Connecticut', 'Delaware', 'District of Columbia', 'Florida', 'Georgia',
+  'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky',
+  'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
+  'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
+  'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
+  'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina',
+  'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia',
+  'Washington', 'West Virginia', 'Wisconsin', 'Wyoming',
+]
+
 interface NewspaperInfo {
   newspaper_name: string
   newspaper_date: string
   newspaper_page: string
+  newspaper_state: string
 }
 
 interface StepNewspaperInfoProps {
@@ -60,6 +73,23 @@ export default function StepNewspaperInfo({ info, onChange, isLoading }: StepNew
               placeholder="e.g. The Daily Tribune"
               className="input-field"
             />
+          </div>
+
+          <div>
+            <label htmlFor="newspaper_state" className="label">
+              State <span className="text-brand-gray-mid font-normal">(optional)</span>
+            </label>
+            <select
+              id="newspaper_state"
+              value={info.newspaper_state}
+              onChange={(e) => handleChange('newspaper_state', e.target.value)}
+              className="input-field"
+            >
+              <option value="">Select a state...</option>
+              {US_STATES.map((state) => (
+                <option key={state} value={state}>{state}</option>
+              ))}
+            </select>
           </div>
 
           <div>

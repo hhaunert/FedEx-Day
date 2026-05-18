@@ -3,27 +3,28 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
+const US_STATES = [
+  'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado',
+  'Connecticut', 'Delaware', 'District of Columbia', 'Florida', 'Georgia',
+  'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky',
+  'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
+  'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
+  'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
+  'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina',
+  'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia',
+  'Washington', 'West Virginia', 'Wisconsin', 'Wyoming',
+]
+
 interface Props {
   id: string
   title: string | null
   newspaperName: string | null
   newspaperDate: string | null
   newspaperPage: string | null
+  newspaperState: string | null
 }
 
-function buildCitation(title: string, name: string, date: string, page: string): string {
-  const parts: string[] = []
-  if (title) parts.push(`"${title}"`)
-  if (name) parts.push(name)
-  if (date) parts.push(date)
-  if (page) {
-    const pageStr = page.toLowerCase().startsWith('p') ? page : `p. ${page}`
-    parts.push(pageStr)
-  }
-  return parts.join(', ') + (parts.length ? '.' : '')
-}
-
-export default function EditableCitation({ id, title, newspaperName, newspaperDate, newspaperPage }: Props) {
+export default function EditableCitation({ id, title, newspaperName, newspaperDate, newspaperPage, newspaperState }: Props) {
   const router = useRouter()
   const [editing, setEditing] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -34,22 +35,31 @@ export default function EditableCitation({ id, title, newspaperName, newspaperDa
     name: newspaperName || '',
     date: newspaperDate || '',
     page: newspaperPage || '',
+    state: newspaperState || '',
   })
 
   const [draft, setDraft] = useState(saved)
 
-  const citation = buildCitation(title || '', saved.name, saved.date, saved.page)
-
-  const openEdit = () => {
-    setDraft(saved)
-    setError(false)
-    setEditing(true)
+  // Evidence Explained format:
+  // "Title," Newspaper Name (State), Date, p. Page.
+  const buildCitation = (s: typeof saved) => {
+    const location = s.state ? `(${s.state})` : ''
+    const pub = [s.name, location].filter(Boolean).join(' ')
+    const pageStr = s.page
+      ? (s.page.toLowerCase().startsWith('p') ? s.page : `p. ${s.page}`)
+      : ''
+    const parts = [pub, s.date, pageStr].filter(Boolean)
+    const body = parts.join(', ')
+    if (!title && !body) return ''
+    if (title && body) return `“${title},” ${body}.`
+    if (title) return `“${title}.”`
+    return `${body}.`
   }
 
-  const cancel = () => {
-    setDraft(saved)
-    setEditing(false)
-  }
+  const citation = buildCitation(saved)
+
+  const openEdit = () => { setDraft(saved); setError(false); setEditing(true) }
+  const cancel = () => { setDraft(saved); setEditing(false) }
 
   const save = async () => {
     setSaving(true)
@@ -61,6 +71,7 @@ export default function EditableCitation({ id, title, newspaperName, newspaperDa
         newspaper_name: draft.name,
         newspaper_date: draft.date,
         newspaper_page: draft.page,
+        newspaper_state: draft.state,
       }),
     })
     setSaving(false)
@@ -85,36 +96,17 @@ export default function EditableCitation({ id, title, newspaperName, newspaperDa
         <h3 className="font-semibold text-brand-darker text-sm">Citation</h3>
         <div className="flex items-center gap-2">
           {!editing && citation && (
-            <button
-              onClick={copyCitation}
-              className="flex items-center gap-1 text-xs text-brand-gray-mid hover:text-brand-red transition-colors"
-              title="Copy citation"
-            >
+            <button onClick={copyCitation} className="flex items-center gap-1 text-xs text-brand-gray-mid hover:text-brand-red transition-colors" title="Copy citation">
               {copied ? (
-                <>
-                  <svg className="w-3 h-3 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span className="text-green-600">Copied!</span>
-                </>
+                <><svg className="w-3 h-3 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg><span className="text-green-600">Copied!</span></>
               ) : (
-                <>
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                  </svg>
-                  Copy
-                </>
+                <><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>Copy</>
               )}
             </button>
           )}
           {!editing && (
-            <button
-              onClick={openEdit}
-              className="flex items-center gap-1 text-xs text-brand-gray-mid hover:text-brand-red transition-colors"
-            >
-              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-              </svg>
+            <button onClick={openEdit} className="flex items-center gap-1 text-xs text-brand-gray-mid hover:text-brand-red transition-colors">
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
               Edit
             </button>
           )}
@@ -125,51 +117,36 @@ export default function EditableCitation({ id, title, newspaperName, newspaperDa
         <div className="space-y-3">
           <div>
             <label className="text-xs font-medium text-brand-darker block mb-1">Publication</label>
-            <input
-              type="text"
-              value={draft.name}
-              onChange={(e) => setDraft((d) => ({ ...d, name: e.target.value }))}
+            <input type="text" value={draft.name} onChange={(e) => setDraft((d) => ({ ...d, name: e.target.value }))}
               className="w-full text-sm border border-brand-gray-border rounded-lg px-3 py-1.5 focus:outline-none focus:border-brand-red"
-              placeholder="Newspaper name"
-              autoFocus
-            />
+              placeholder="Newspaper name" autoFocus />
+          </div>
+          <div>
+            <label className="text-xs font-medium text-brand-darker block mb-1">State</label>
+            <select value={draft.state} onChange={(e) => setDraft((d) => ({ ...d, state: e.target.value }))}
+              className="w-full text-sm border border-brand-gray-border rounded-lg px-3 py-1.5 focus:outline-none focus:border-brand-red bg-white">
+              <option value="">Select a state...</option>
+              {US_STATES.map((s) => <option key={s} value={s}>{s}</option>)}
+            </select>
           </div>
           <div>
             <label className="text-xs font-medium text-brand-darker block mb-1">Date</label>
-            <input
-              type="text"
-              value={draft.date}
-              onChange={(e) => setDraft((d) => ({ ...d, date: e.target.value }))}
+            <input type="text" value={draft.date} onChange={(e) => setDraft((d) => ({ ...d, date: e.target.value }))}
               className="w-full text-sm border border-brand-gray-border rounded-lg px-3 py-1.5 focus:outline-none focus:border-brand-red"
-              placeholder="e.g. May 9, 1912"
-            />
+              placeholder="e.g. May 9, 1912" />
           </div>
           <div>
             <label className="text-xs font-medium text-brand-darker block mb-1">Page</label>
-            <input
-              type="text"
-              value={draft.page}
-              onChange={(e) => setDraft((d) => ({ ...d, page: e.target.value }))}
+            <input type="text" value={draft.page} onChange={(e) => setDraft((d) => ({ ...d, page: e.target.value }))}
               className="w-full text-sm border border-brand-gray-border rounded-lg px-3 py-1.5 focus:outline-none focus:border-brand-red"
-              placeholder="e.g. 1"
-            />
+              placeholder="e.g. 1" />
           </div>
-          {error && (
-            <p className="text-xs text-red-600">Failed to save. Please try again.</p>
-          )}
+          {error && <p className="text-xs text-red-600">Failed to save. Please try again.</p>}
           <div className="flex gap-2 pt-1">
-            <button
-              onClick={save}
-              disabled={saving}
-              className="bg-brand-red text-white text-xs px-3 py-1.5 rounded-lg font-medium hover:bg-red-600 disabled:opacity-50"
-            >
+            <button onClick={save} disabled={saving} className="bg-brand-red text-white text-xs px-3 py-1.5 rounded-lg font-medium hover:bg-red-600 disabled:opacity-50">
               {saving ? 'Saving...' : 'Save'}
             </button>
-            <button
-              onClick={cancel}
-              disabled={saving}
-              className="text-xs px-3 py-1.5 rounded-lg border border-brand-gray-border text-brand-gray-dark hover:border-brand-darker transition-colors disabled:opacity-50"
-            >
+            <button onClick={cancel} disabled={saving} className="text-xs px-3 py-1.5 rounded-lg border border-brand-gray-border text-brand-gray-dark hover:border-brand-darker transition-colors disabled:opacity-50">
               Cancel
             </button>
           </div>
@@ -178,24 +155,15 @@ export default function EditableCitation({ id, title, newspaperName, newspaperDa
         <div>
           {citation ? (
             <p className="text-sm text-brand-gray-dark leading-relaxed">
-              {title && (
-                <span>&ldquo;{title},&rdquo; </span>
-              )}
-              {saved.name && (
-                <em>{saved.name}</em>
-              )}
-              {saved.date && (
-                <span>, {saved.date}</span>
-              )}
-              {saved.page && (
-                <span>, {saved.page.toLowerCase().startsWith('p') ? saved.page : `p. ${saved.page}`}</span>
-              )}
+              {title && <span>&ldquo;{title},&rdquo; </span>}
+              {saved.name && <em>{saved.name}</em>}
+              {saved.state && <span> ({saved.state})</span>}
+              {saved.date && <span>, {saved.date}</span>}
+              {saved.page && <span>, {saved.page.toLowerCase().startsWith('p') ? saved.page : `p. ${saved.page}`}</span>}
               <span>.</span>
             </p>
           ) : (
-            <p className="text-sm italic text-brand-gray-border">
-              No citation info available — click Edit to add details.
-            </p>
+            <p className="text-sm italic text-brand-gray-border">No citation info — click Edit to add details.</p>
           )}
           <p className="text-xs text-brand-gray-border mt-3">
             Evidence Explained style · <button onClick={openEdit} className="underline hover:text-brand-red transition-colors">Edit fields</button> to update

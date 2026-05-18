@@ -62,6 +62,7 @@ export async function POST(request: NextRequest) {
     const newspaperName = formData.get('newspaper_name') as string || ''
     const newspaperDate = formData.get('newspaper_date') as string || ''
     const newspaperPage = formData.get('newspaper_page') as string || ''
+    const newspaperState = formData.get('newspaper_state') as string || ''
     const userDetails = formData.get('user_details') as string || ''
     const title = formData.get('title') as string || ''
     const storyTypeSlugs = formData.getAll('story_types') as string[]
@@ -169,6 +170,7 @@ export async function POST(request: NextRequest) {
         newspaper_name: finalNewspaperName,
         newspaper_date: finalNewspaperDate,
         newspaper_page: finalNewspaperPage,
+        newspaper_state: newspaperState || null,
         transcription,
         user_details: userDetails,
         selected_story_types: storyTypeSlugs,

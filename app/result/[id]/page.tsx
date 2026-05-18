@@ -96,6 +96,7 @@ export default async function ResultPage({ params }: { params: { id: string } })
               newspaperName={clipping.newspaper_name}
               newspaperDate={clipping.newspaper_date}
               newspaperPage={clipping.newspaper_page}
+              newspaperState={clipping.newspaper_state}
             />
 
             <EditableDetails

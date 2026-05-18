@@ -19,6 +19,7 @@ interface NewspaperInfo {
   newspaper_name: string
   newspaper_date: string
   newspaper_page: string
+  newspaper_state: string
 }
 
 export default function AnalyzePage() {
@@ -31,6 +32,7 @@ export default function AnalyzePage() {
     newspaper_name: '',
     newspaper_date: '',
     newspaper_page: '',
+    newspaper_state: '',
   })
   const [userDetails, setUserDetails] = useState('')
   const [analysisTitle, setAnalysisTitle] = useState('')
@@ -153,6 +155,7 @@ export default function AnalyzePage() {
       formData.append('newspaper_name', newspaperInfo.newspaper_name)
       formData.append('newspaper_date', newspaperInfo.newspaper_date)
       formData.append('newspaper_page', newspaperInfo.newspaper_page)
+      formData.append('newspaper_state', newspaperInfo.newspaper_state)
       formData.append('user_details', userDetails)
       formData.append('title', analysisTitle)
       selectedStories.forEach((s) => formData.append('story_types', s))
