@@ -186,9 +186,6 @@ export default async function HomePage() {
                   {/* Icon circle */}
                   <div className="relative z-10 w-[4.5rem] h-[4.5rem] rounded-full bg-brand-red shadow-md flex items-center justify-center mb-5 ring-4 ring-brand-gray-light">
                     {icon}
-                    <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-brand-darker text-white text-xs font-bold flex items-center justify-center">
-                      {step}
-                    </span>
                   </div>
                   <h3 className="font-serif font-bold text-brand-darker text-lg mb-2">{title}</h3>
                   <p className="text-sm text-brand-gray-dark leading-relaxed max-w-[180px]">{desc}</p>
