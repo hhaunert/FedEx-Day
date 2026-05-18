@@ -25,6 +25,7 @@ export default async function HomePage() {
   const content = defaultContent
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
+  const { count } = await supabase.from('clippings').select('*', { count: 'exact', head: true })
 
 
   return (
@@ -56,6 +57,12 @@ export default async function HomePage() {
               {content.cta_primary}
             </Link>
           </div>
+
+          {count !== null && count > 0 && (
+            <p className="mt-5 text-sm text-brand-gray-dark">
+              <span className="font-semibold text-brand-darker">{count.toLocaleString()}</span> clippings analyzed and counting
+            </p>
+          )}
         </div>
       </section>
 
