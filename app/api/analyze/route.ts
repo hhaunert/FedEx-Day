@@ -21,16 +21,18 @@ const DEFAULT_CLUE_REPORT_PROMPT = `You are an expert genealogist analyzing a ne
 }
 Be thorough and extract every possible genealogical detail.`
 
-const DEFAULT_RESEARCH_TRAIL_PROMPT = `You are a professional genealogist creating a research plan. Based on the clue report and newspaper transcription provided, generate a comprehensive research trail in JSON format:
+const DEFAULT_RESEARCH_TRAIL_PROMPT = `You are a professional genealogist creating a prioritized research checklist from a newspaper clipping. Return ONLY this JSON structure with no extra text:
 {
-  "next_searches": [{ "record_type": string, "repository": string, "search_terms": string, "why": string, "priority": "high|medium|low" }],
-  "surrounding_areas": [{ "location": string, "why_important": string, "records_to_check": [string] }],
-  "name_variants": [{ "original": string, "variants": [string], "reason": string }],
-  "time_period_tips": [string],
-  "quick_wins": [string],
-  "long_term_strategies": [string]
+  "searches": [
+    { "priority": 1, "what": "record type (brief)", "where": "where to find it (brief)" }
+  ],
+  "name_variants": [
+    { "name": "name as it appears", "try_also": ["variant1", "variant2"] }
+  ],
+  "nearby_places": ["place1", "place2"],
+  "tips": ["tip1", "tip2"]
 }
-Be specific, actionable, and prioritize the most promising leads.`
+Rules: searches must be ordered by priority (1 = most important), limit to 10 searches max, 1-2 sentence max per field, nearby_places are surrounding cities/counties to also search, tips are short practical search hints (name spelling, record availability, etc). Be concise.`
 
 const DEFAULT_STORY_PROMPTS: Record<string, string> = {
   'ancestor-life': 'You are a genealogy storyteller. Based on the newspaper clipping transcription and clue report provided, write a compelling narrative about this ancestor\'s life. Draw on historical context, social norms of the era, and details gleaned from the article to paint a vivid picture of who this person was and what their daily life might have been like. Write in a warm, engaging style that brings the ancestor to life for modern readers.',

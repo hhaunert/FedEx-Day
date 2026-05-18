@@ -99,7 +99,7 @@ export async function generateResearchTrail(
 ) {
   const response = await anthropic.messages.create({
     model: 'claude-sonnet-4-6',
-    max_tokens: 4096,
+    max_tokens: 8096,
     system: systemPrompt,
     messages: [
       {
@@ -115,6 +115,11 @@ export async function generateResearchTrail(
     const cleaned = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
     return JSON.parse(cleaned)
   } catch {
+    // Try to extract partial JSON
+    const match = text.match(/\{[\s\S]*\}/)
+    if (match) {
+      try { return JSON.parse(match[0]) } catch { /* fall through */ }
+    }
     return { raw: text }
   }
 }
