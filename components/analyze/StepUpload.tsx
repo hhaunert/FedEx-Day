@@ -86,7 +86,7 @@ export default function StepUpload({ onFileSelect, selectedFile, isExtracting }:
               </div>
             )}
             <div>
-              <p className="font-semibold text-brand-darker">{selectedFile.name}</p>
+              <p className="font-semibold text-brand-darker truncate max-w-xs sm:max-w-sm">{selectedFile.name}</p>
               <p className="text-sm text-brand-gray-mid mt-1">
                 {isExtracting ? 'Reading clipping details...' : `${(selectedFile.size / 1024 / 1024).toFixed(2)} MB · Ready`}
               </p>

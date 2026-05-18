@@ -15,19 +15,19 @@ export default function ExpandableSection({ title, subtitle, buttonLabel, childr
   return (
     <div className="card overflow-hidden">
       <button
-        className="w-full text-left p-6 flex items-center justify-between gap-4 hover:bg-brand-gray-lighter transition-colors"
+        className="w-full text-left p-4 sm:p-6 flex items-center justify-between gap-3 sm:gap-4 hover:bg-brand-gray-lighter transition-colors"
         onClick={() => setOpen((v) => !v)}
       >
         <div className="flex items-center gap-3 min-w-0">
           <span className="w-1 h-6 bg-brand-red rounded-full flex-shrink-0" />
           <div className="min-w-0">
-            <h2 className="font-serif text-xl font-bold text-brand-darker">{title}</h2>
+            <h2 className="font-serif text-lg sm:text-xl font-bold text-brand-darker">{title}</h2>
             <p className="text-sm text-brand-gray-mid mt-0.5">{subtitle}</p>
           </div>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
           {!open && (
-            <span className="text-sm font-medium text-brand-red border border-brand-red/30 rounded-full px-3 py-1 hover:bg-red-50 transition-colors">
+            <span className="hidden sm:inline text-sm font-medium text-brand-red border border-brand-red/30 rounded-full px-3 py-1 hover:bg-red-50 transition-colors">
               {buttonLabel}
             </span>
           )}
@@ -41,8 +41,8 @@ export default function ExpandableSection({ title, subtitle, buttonLabel, childr
       </button>
 
       {open && (
-        <div className="px-6 pb-6 border-t border-brand-gray-border">
-          <div className="pt-5">{children}</div>
+        <div className="px-4 sm:px-6 pb-4 sm:pb-6 border-t border-brand-gray-border">
+          <div className="pt-4 sm:pt-5">{children}</div>
         </div>
       )}
     </div>
