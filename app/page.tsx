@@ -196,7 +196,7 @@ export default async function HomePage() {
 
           <div className="text-center mt-14">
             <Link href="/analyze" className="btn-primary text-base px-8 py-4">
-              Get Started Free
+              Crack Your First Case →
             </Link>
           </div>
         </div>
