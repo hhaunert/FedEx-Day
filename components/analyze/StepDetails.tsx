@@ -5,9 +5,10 @@ interface StepDetailsProps {
   onChange: (value: string) => void
   title: string
   onTitleChange: (value: string) => void
+  suggestedTitle?: string
 }
 
-export default function StepDetails({ value, onChange, title, onTitleChange }: StepDetailsProps) {
+export default function StepDetails({ value, onChange, title, onTitleChange, suggestedTitle }: StepDetailsProps) {
   return (
     <div className="space-y-6">
       <div>
@@ -32,6 +33,18 @@ export default function StepDetails({ value, onChange, title, onTitleChange }: S
           className="input-field"
           maxLength={100}
         />
+        {suggestedTitle && !title && (
+          <button
+            type="button"
+            onClick={() => onTitleChange(suggestedTitle)}
+            className="mt-2 inline-flex items-center gap-1.5 text-xs text-brand-red hover:text-red-700 border border-brand-red/30 hover:border-brand-red/60 rounded-full px-3 py-1 transition-colors"
+          >
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Use: {suggestedTitle}
+          </button>
+        )}
         <p className="text-xs text-brand-gray-mid mt-1.5">
           This name appears on your dashboard to help you find this analysis later.
         </p>

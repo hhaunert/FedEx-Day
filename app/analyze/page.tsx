@@ -241,6 +241,7 @@ export default function AnalyzePage() {
               onChange={setUserDetails}
               title={analysisTitle}
               onTitleChange={setAnalysisTitle}
+              suggestedTitle={[newspaperInfo.newspaper_name, newspaperInfo.newspaper_date].filter(Boolean).join(', ')}
             />
           )}
           {currentStep === 4 && (

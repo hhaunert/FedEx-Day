@@ -154,20 +154,20 @@ export default function ClippingsGrid({ clippings: initial }: { clippings: Clipp
           </Link>
 
           <div className="p-4">
+            <EditableTitle
+              id={clipping.id}
+              initialTitle={clipping.title}
+              onSave={handleTitleSave}
+            />
+
             <Link href={`/result/${clipping.id}`}>
-              <p className="font-semibold text-brand-darker text-sm truncate hover:text-brand-red transition-colors">
+              <p className="font-semibold text-brand-darker text-sm truncate hover:text-brand-red transition-colors mt-1">
                 {clipping.newspaper_name || 'Unknown Newspaper'}
               </p>
               <p className="text-brand-gray-mid text-xs mt-0.5 truncate">
                 {clipping.newspaper_date || 'Date unknown'}
               </p>
             </Link>
-
-            <EditableTitle
-              id={clipping.id}
-              initialTitle={clipping.title}
-              onSave={handleTitleSave}
-            />
 
             <p className="text-brand-gray-border text-xs mt-2">
               {new Date(clipping.created_at).toLocaleDateString('en-US', {
