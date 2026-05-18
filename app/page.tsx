@@ -6,7 +6,7 @@ const defaultContent = {
   hero_headline: 'Uncover the Stories Hidden in Your Newspaper Clippings',
   hero_subheadline:
     'AI-powered analysis transforms old newspaper clippings into rich family histories, research trails, and compelling ancestor stories.',
-  cta_primary: 'Analyze a Clipping',
+  cta_primary: 'Crack Your First Case →',
   feature_clue_report_title: 'Clue Report',
   feature_clue_report_desc:
     'AI extracts people, dates, places, and relationships from your clipping into a structured research profile.',
@@ -191,7 +191,7 @@ export default async function HomePage() {
 
           <div className="text-center mt-14">
             <Link href="/analyze" className="btn-primary text-base px-8 py-4">
-              Crack Your First Case →
+              Analyze a Clipping
             </Link>
           </div>
         </div>
