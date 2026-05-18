@@ -59,9 +59,10 @@ export default async function HomePage() {
           </div>
 
           {count !== null && count > 0 && (
-            <p className="mt-5 text-sm text-brand-gray-dark">
-              <span className="font-semibold text-brand-darker">{count.toLocaleString()}</span> clippings analyzed and counting
-            </p>
+            <div className="mt-8">
+              <p className="font-serif text-4xl sm:text-5xl font-bold text-brand-darker">{count.toLocaleString()}</p>
+              <p className="text-sm text-brand-gray-dark mt-1 uppercase tracking-widest">clippings analyzed</p>
+            </div>
           )}
         </div>
       </section>
