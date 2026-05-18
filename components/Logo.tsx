@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import Image from 'next/image'
 
 interface LogoProps {
   size?: 'sm' | 'md' | 'lg'
@@ -16,12 +15,12 @@ export default function Logo({ size = 'md', href = '/' }: LogoProps) {
   const { width, height } = dimensions[size]
 
   const content = (
-    <Image
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
       src="/main-logo.svg"
       alt="NewspaperArchive"
       width={width}
       height={height}
-      priority
     />
   )
 
