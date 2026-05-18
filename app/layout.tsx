@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import BugEasterEgg from '@/components/BugEasterEgg'
 
 export const metadata: Metadata = {
   title: 'Newspaper Detective | NewspaperArchive',
@@ -16,6 +17,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="min-h-screen bg-white antialiased">
         {children}
+        <BugEasterEgg />
       </body>
     </html>
   )
