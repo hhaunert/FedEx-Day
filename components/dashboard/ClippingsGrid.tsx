@@ -64,13 +64,13 @@ export default function ClippingsGrid({ clippings: initial }: { clippings: Clipp
           </button>
 
           <Link href={`/result/${clipping.id}`} className="block hover:shadow-md transition-shadow duration-200">
-            <div className="aspect-[3/4] bg-brand-gray-lighter relative overflow-hidden">
+            <div className="aspect-[3/4] bg-white border-b border-brand-gray-border relative overflow-hidden">
               {clipping.image_url ? (
                 <Image
                   src={clipping.image_url}
                   alt={clipping.newspaper_name || 'Newspaper clipping'}
                   fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-200"
+                  className="object-contain p-2 group-hover:scale-105 transition-transform duration-200"
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
