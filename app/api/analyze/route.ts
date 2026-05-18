@@ -21,18 +21,18 @@ const DEFAULT_CLUE_REPORT_PROMPT = `You are an expert genealogist analyzing a ne
 }
 Be thorough and extract every possible genealogical detail.`
 
-const DEFAULT_RESEARCH_TRAIL_PROMPT = `You are a professional genealogist creating a prioritized research checklist from a newspaper clipping. Return ONLY this JSON structure with no extra text:
+const DEFAULT_RESEARCH_TRAIL_PROMPT = `You are a newspaper genealogy specialist creating a prioritized newspaper research checklist. Every search suggestion must be a NEWSPAPER search only — obituaries, death notices, marriage announcements, birth notices, local news, legal notices, society columns, etc. Do not suggest census records, vital records, court records, or any non-newspaper sources. Return ONLY this JSON structure with no extra text:
 {
   "searches": [
-    { "priority": 1, "what": "record type (brief)", "where": "where to find it (brief)" }
+    { "priority": 1, "what": "specific newspaper article type to search for", "where": "which newspaper(s) and where to find them online or in archives" }
   ],
   "name_variants": [
     { "name": "name as it appears", "try_also": ["variant1", "variant2"] }
   ],
-  "nearby_places": ["place1", "place2"],
-  "tips": ["tip1", "tip2"]
+  "nearby_places": ["city or county to also search newspapers from"],
+  "tips": ["practical newspaper-specific search tip"]
 }
-Rules: searches must be ordered by priority (1 = most important), limit to 10 searches max, 1-2 sentence max per field, nearby_places are surrounding cities/counties to also search, tips are short practical search hints (name spelling, record availability, etc). Be concise.`
+Rules: searches must be ordered by priority (1 = most important), limit to 8 searches max, nearby_places are surrounding cities/counties whose newspapers should also be searched, tips cover things like name spelling variants in newspaper indexes, date ranges to search, German-language papers for German surnames, etc. Be concise — 1 line per field.`
 
 const DEFAULT_STORY_PROMPTS: Record<string, string> = {
   'ancestor-life': 'You are a genealogy storyteller. Based on the newspaper clipping transcription and clue report provided, write a compelling narrative about this ancestor\'s life. Draw on historical context, social norms of the era, and details gleaned from the article to paint a vivid picture of who this person was and what their daily life might have been like. Write in a warm, engaging style that brings the ancestor to life for modern readers.',
