@@ -87,10 +87,12 @@ export async function generateClueReport(
   newspaperName?: string,
   newspaperDate?: string,
   newspaperPage?: string,
-  userDetails?: string
+  userDetails?: string,
+  newspaperState?: string
 ) {
   const contextInfo = [
     newspaperName && `Newspaper: ${newspaperName}`,
+    newspaperState && `State: ${newspaperState}`,
     newspaperDate && `Date: ${newspaperDate}`,
     newspaperPage && `Page: ${newspaperPage}`,
     userDetails && `Additional known details: ${userDetails}`,
@@ -123,8 +125,10 @@ export async function generateClueReport(
 export async function generateResearchTrail(
   clueReport: object,
   transcription: string,
-  systemPrompt: string
+  systemPrompt: string,
+  newspaperState?: string
 ) {
+  const stateContext = newspaperState ? `\n\nState: ${newspaperState} — focus newspaper searches on ${newspaperState} publications and nearby state papers.` : ''
   const response = await anthropic.messages.create({
     model: 'claude-sonnet-4-6',
     max_tokens: 8096,
@@ -132,7 +136,7 @@ export async function generateResearchTrail(
     messages: [
       {
         role: 'user',
-        content: `Clue Report:\n${JSON.stringify(clueReport, null, 2)}\n\nNewspaper Clipping Transcription:\n${transcription}\n\nReturn ONLY a valid JSON object with no additional text or markdown.`,
+        content: `Clue Report:\n${JSON.stringify(clueReport, null, 2)}\n\nNewspaper Clipping Transcription:\n${transcription}${stateContext}\n\nReturn ONLY a valid JSON object with no additional text or markdown.`,
       },
     ],
   })
@@ -157,8 +161,10 @@ export async function generateStory(
   clueReport: object,
   userDetails: string,
   storyPrompt: string,
-  storyType: string
+  storyType: string,
+  newspaperState?: string
 ) {
+  const stateContext = newspaperState ? `\nPublication state: ${newspaperState}` : ''
   const response = await anthropic.messages.create({
     model: 'claude-sonnet-4-6',
     max_tokens: 4096,
@@ -166,7 +172,7 @@ export async function generateStory(
     messages: [
       {
         role: 'user',
-        content: `Clue Report:\n${JSON.stringify(clueReport, null, 2)}\n\nNewspaper Clipping Transcription:\n${transcription}\n\nAdditional known details from researcher:\n${userDetails || 'None provided'}`,
+        content: `Clue Report:\n${JSON.stringify(clueReport, null, 2)}\n\nNewspaper Clipping Transcription:\n${transcription}\n\nAdditional known details from researcher:\n${userDetails || 'None provided'}${stateContext}`,
       },
     ],
   })

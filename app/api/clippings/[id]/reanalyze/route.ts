@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import {
-  extractNewspaperInfo,
-  transcribeClipping,
   generateClueReport,
   generateResearchTrail,
   generateStory,
@@ -45,114 +43,64 @@ const DEFAULT_STORY_PROMPTS: Record<string, string> = {
   'life-moment': 'You are a genealogy storyteller with a gift for bringing singular moments to life. Based on the newspaper clipping transcription and clue report provided, write a focused, intimate narrative about this specific moment in your ancestor\'s life. What were they feeling? What led up to this moment? What came after? Make this single event feel meaningful and real.',
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
-    const formData = await request.formData()
-    const imageFile = formData.get('image') as File | null
-    const newspaperName = formData.get('newspaper_name') as string || ''
-    const newspaperDate = formData.get('newspaper_date') as string || ''
-    const newspaperPage = formData.get('newspaper_page') as string || ''
-    const newspaperState = formData.get('newspaper_state') as string || ''
-    const userDetails = formData.get('user_details') as string || ''
-    const title = formData.get('title') as string || ''
-    const storyTypeSlugs = formData.getAll('story_types') as string[]
-
-    if (!imageFile) {
-      return NextResponse.json({ error: 'No image provided' }, { status: 400 })
-    }
-
-
-
-    // Convert image to base64
-    const arrayBuffer = await imageFile.arrayBuffer()
-    const uint8Array = new Uint8Array(arrayBuffer)
-    const base64 = Buffer.from(arrayBuffer).toString('base64')
-    const mediaType = imageFile.type || 'image/jpeg'
-
-    // Upload image to Supabase storage
-    let imageUrl = ''
-    const safeFileName = imageFile.name.replace(/[^a-zA-Z0-9._-]/g, '_')
-    const fileName = `${user.id}/${Date.now()}-${safeFileName}`
-    const { data: uploadData, error: uploadError } = await supabase.storage
+    const { data: clipping, error: fetchError } = await supabase
       .from('clippings')
-      .upload(fileName, uint8Array, {
-        contentType: mediaType,
-        upsert: true,
-      })
+      .select('*')
+      .eq('id', params.id)
+      .eq('user_id', user.id)
+      .single()
 
-    if (uploadError) {
-      console.error('Storage upload error:', uploadError)
+    if (fetchError || !clipping) {
+      return NextResponse.json({ error: 'Clipping not found' }, { status: 404 })
     }
 
-    if (!uploadError && uploadData) {
-      const { data: { publicUrl } } = supabase.storage
-        .from('clippings')
-        .getPublicUrl(fileName)
-      imageUrl = publicUrl
+    const transcription = clipping.transcription || ''
+    if (!transcription) {
+      return NextResponse.json({ error: 'No transcription available to reanalyze' }, { status: 400 })
     }
 
-    // Step 1: Extract newspaper info and transcribe (parallel)
-    const [extracted, transcription] = await Promise.all([
-      extractNewspaperInfo(base64, mediaType),
-      transcribeClipping(base64, mediaType),
-    ])
-    const finalNewspaperName = newspaperName || extracted.newspaper_name || ''
-    const finalNewspaperDate = newspaperDate || extracted.date || ''
-    const finalNewspaperPage = newspaperPage || extracted.page || ''
-
-    // Fetch AI prompts from DB (fall back to defaults)
-    const { data: promptsData } = await supabase
-      .from('ai_prompts')
-      .select('name, system_prompt')
-
+    // Fetch AI prompts from DB
+    const { data: promptsData } = await supabase.from('ai_prompts').select('name, system_prompt')
     const promptsMap: Record<string, string> = {}
-    promptsData?.forEach((p: { name: string; system_prompt: string }) => {
-      promptsMap[p.name] = p.system_prompt
-    })
+    promptsData?.forEach((p: { name: string; system_prompt: string }) => { promptsMap[p.name] = p.system_prompt })
 
     const clueReportPrompt = promptsMap['clue_report'] || DEFAULT_CLUE_REPORT_PROMPT
     const researchTrailPrompt = promptsMap['research_trail'] || DEFAULT_RESEARCH_TRAIL_PROMPT
 
-    // Fetch story type prompts from DB
+    const storyTypeSlugs: string[] = clipping.selected_story_types || []
     const { data: storyTypesData } = await supabase
-      .from('story_types')
-      .select('slug, ai_prompt')
-      .in('slug', storyTypeSlugs)
-
+      .from('story_types').select('slug, ai_prompt').in('slug', storyTypeSlugs)
     const storyPromptsMap: Record<string, string> = {}
-    storyTypesData?.forEach((s: { slug: string; ai_prompt: string }) => {
-      storyPromptsMap[s.slug] = s.ai_prompt
-    })
+    storyTypesData?.forEach((s: { slug: string; ai_prompt: string }) => { storyPromptsMap[s.slug] = s.ai_prompt })
 
-    // Step 2: Generate clue report
+    const newspaperState = clipping.newspaper_state || ''
+
     const clueReport = await generateClueReport(
       transcription,
       clueReportPrompt,
-      finalNewspaperName,
-      finalNewspaperDate,
-      finalNewspaperPage,
-      userDetails,
+      clipping.newspaper_name,
+      clipping.newspaper_date,
+      clipping.newspaper_page,
+      clipping.user_details,
       newspaperState
     )
 
-    // Step 3: Parallel generation of research trail + stories
     const [researchTrail, ...stories] = await Promise.all([
       generateResearchTrail(clueReport, transcription, researchTrailPrompt, newspaperState),
       ...storyTypeSlugs.map((slug) =>
         generateStory(
           transcription,
           clueReport,
-          userDetails,
+          clipping.user_details || '',
           storyPromptsMap[slug] || DEFAULT_STORY_PROMPTS[slug] || '',
           slug,
           newspaperState
@@ -160,41 +108,23 @@ export async function POST(request: NextRequest) {
       ),
     ])
 
-    const storyPath = { stories }
-
-    // Step 4: Save to database
-    const { data: clipping, error: insertError } = await supabase
+    const { error: updateError } = await supabase
       .from('clippings')
-      .insert({
-        user_id: user.id,
-        title: title || null,
-        image_url: imageUrl,
-        newspaper_name: finalNewspaperName,
-        newspaper_date: finalNewspaperDate,
-        newspaper_page: finalNewspaperPage,
-        newspaper_state: newspaperState || null,
-        transcription,
-        user_details: userDetails,
-        selected_story_types: storyTypeSlugs,
+      .update({
         clue_report: clueReport,
-        story_path: storyPath,
+        story_path: { stories },
         research_trail: researchTrail,
-        status: 'complete',
       })
-      .select('id')
-      .single()
+      .eq('id', params.id)
+      .eq('user_id', user.id)
 
-    if (insertError) {
-      console.error('Insert error:', insertError)
-      return NextResponse.json({ error: 'Failed to save analysis' }, { status: 500 })
+    if (updateError) {
+      return NextResponse.json({ error: 'Failed to save reanalysis' }, { status: 500 })
     }
 
-    return NextResponse.json({ id: clipping.id })
+    return NextResponse.json({ success: true })
   } catch (error) {
-    console.error('Analyze error:', error)
-    return NextResponse.json(
-      { error: 'Analysis failed. Please try again.' },
-      { status: 500 }
-    )
+    console.error('Reanalyze error:', error)
+    return NextResponse.json({ error: 'Reanalysis failed. Please try again.' }, { status: 500 })
   }
 }
