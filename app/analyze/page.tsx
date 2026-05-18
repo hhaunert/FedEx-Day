@@ -88,11 +88,12 @@ export default function AnalyzePage() {
     // Immediately parse what we can from the filename
     const fromFilename = parseFilename(file.name)
     if (fromFilename.newspaper_name || fromFilename.newspaper_date) {
-      setNewspaperInfo({
+      setNewspaperInfo((prev) => ({
+        ...prev,
         newspaper_name: fromFilename.newspaper_name || '',
         newspaper_date: fromFilename.newspaper_date || '',
         newspaper_page: fromFilename.newspaper_page || '',
-      })
+      }))
     }
 
     setIsExtracting(true)
@@ -108,11 +109,12 @@ export default function AnalyzePage() {
 
       if (response.ok) {
         const data = await response.json()
-        setNewspaperInfo({
+        setNewspaperInfo((prev) => ({
+          ...prev,
           newspaper_name: data.newspaper_name || fromFilename.newspaper_name || '',
           newspaper_date: data.date || fromFilename.newspaper_date || '',
           newspaper_page: data.page || fromFilename.newspaper_page || '',
-        })
+        }))
         if (data.suggested_title) setSuggestedTitle(data.suggested_title)
       }
     } catch (err) {
