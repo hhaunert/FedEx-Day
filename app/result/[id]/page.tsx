@@ -91,6 +91,7 @@ export default async function ResultPage({ params }: { params: { id: string } })
 
             <EditableCitation
               id={clipping.id}
+              title={clipping.title}
               newspaperName={clipping.newspaper_name}
               newspaperDate={clipping.newspaper_date}
               newspaperPage={clipping.newspaper_page}
