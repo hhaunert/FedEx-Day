@@ -83,18 +83,18 @@ export default function Nav() {
           <div className="sm:hidden py-3 flex flex-col gap-2 border-t border-brand-gray-border">
             {!loading && user ? (
               <>
-                <Link href="/analyze" className="btn-primary text-sm text-center" onClick={() => setMenuOpen(false)}>
+                <Link href="/analyze" className="btn-primary text-base text-center py-3" onClick={() => setMenuOpen(false)}>
                   New Analysis
                 </Link>
-                <Link href="/dashboard" className="btn-ghost text-sm text-center" onClick={() => setMenuOpen(false)}>
+                <Link href="/dashboard" className="btn-ghost text-base text-center py-3" onClick={() => setMenuOpen(false)}>
                   Dashboard
                 </Link>
-                <button onClick={() => { handleSignOut(); setMenuOpen(false) }} className="btn-ghost text-sm w-full">
+                <button onClick={() => { handleSignOut(); setMenuOpen(false) }} className="btn-ghost text-base py-3 w-full">
                   Sign Out
                 </button>
               </>
             ) : (
-              <Link href="/auth" className="btn-primary text-sm text-center" onClick={() => setMenuOpen(false)}>
+              <Link href="/auth" className="btn-primary text-base text-center py-3" onClick={() => setMenuOpen(false)}>
                 Sign In
               </Link>
             )}

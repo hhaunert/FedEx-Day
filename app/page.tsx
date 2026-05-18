@@ -29,7 +29,7 @@ function FeatureCard({
   description: string
 }) {
   return (
-    <div className="card p-8">
+    <div className="card p-4 sm:p-6 md:p-8">
       <div className="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center mb-5">
         {icon}
       </div>
@@ -60,7 +60,7 @@ export default async function HomePage() {
         />
         <div className="absolute inset-0 bg-brand-gray-light/50" />
         <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 text-center">
-          <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-brand-darker leading-tight mb-6">
+          <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-brand-darker leading-tight mb-6">
             {content.hero_headline}
           </h1>
 
