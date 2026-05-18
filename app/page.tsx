@@ -50,9 +50,9 @@ export default async function HomePage() {
       {/* Hero */}
       <section
         className="relative border-b border-brand-gray-border overflow-hidden"
-        style={{ backgroundImage: "url('/hero.png')", backgroundSize: 'cover', backgroundPosition: '15% center' }}
+        style={{ backgroundImage: "url('/hero.png')", backgroundSize: 'cover', backgroundPosition: '0% center' }}
       >
-        <div className="absolute inset-0 bg-brand-gray-light/95" />
+        <div className="absolute inset-0 bg-brand-gray-light/50" />
         <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 text-center">
           <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-brand-darker leading-tight mb-6">
             {content.hero_headline}
