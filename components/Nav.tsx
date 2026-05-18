@@ -64,10 +64,11 @@ export default function Nav() {
 
           {/* Mobile menu button */}
           <button
-            className="sm:hidden p-2 rounded-lg text-brand-gray-dark hover:bg-brand-gray-lighter"
+            className="sm:hidden p-3 rounded-lg text-brand-gray-dark hover:bg-brand-gray-lighter"
             onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Toggle menu"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {menuOpen ? (
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               ) : (
@@ -79,7 +80,7 @@ export default function Nav() {
 
         {/* Mobile menu */}
         {menuOpen && (
-          <div className="sm:hidden pb-4 flex flex-col gap-2">
+          <div className="sm:hidden py-3 flex flex-col gap-2 border-t border-brand-gray-border">
             {!loading && user ? (
               <>
                 <Link href="/analyze" className="btn-primary text-sm text-center" onClick={() => setMenuOpen(false)}>
@@ -88,7 +89,7 @@ export default function Nav() {
                 <Link href="/dashboard" className="btn-ghost text-sm text-center" onClick={() => setMenuOpen(false)}>
                   Dashboard
                 </Link>
-                <button onClick={handleSignOut} className="btn-ghost text-sm">
+                <button onClick={() => { handleSignOut(); setMenuOpen(false) }} className="btn-ghost text-sm w-full">
                   Sign Out
                 </button>
               </>

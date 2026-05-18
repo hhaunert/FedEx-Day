@@ -49,31 +49,33 @@ export default async function ResultPage({ params }: { params: { id: string } })
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {/* Header */}
-        <div className="flex items-start justify-between mb-8 gap-4">
-          <div>
-            <Link href="/dashboard" className="text-sm text-brand-gray-mid hover:text-brand-darker transition-colors mb-3 inline-block">
-              ← Back to Dashboard
-            </Link>
-            <h1 className="font-serif text-3xl font-bold text-brand-darker">
-              {clipping.newspaper_name || 'Newspaper Clipping'} Analysis
-            </h1>
-            {clipping.newspaper_date && (
-              <p className="text-brand-gray-dark mt-1">
-                {clipping.newspaper_date}
-                {clipping.newspaper_page && ` · ${clipping.newspaper_page}`}
-              </p>
-            )}
+        <div className="mb-8">
+          <Link href="/dashboard" className="text-sm text-brand-gray-mid hover:text-brand-darker transition-colors mb-3 inline-block">
+            ← Back to Dashboard
+          </Link>
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+            <div>
+              <h1 className="font-serif text-2xl sm:text-3xl font-bold text-brand-darker">
+                {clipping.title || clipping.newspaper_name || 'Newspaper Clipping'}
+              </h1>
+              {(clipping.newspaper_date || clipping.newspaper_page) && (
+                <p className="text-brand-gray-dark mt-1 text-sm sm:text-base">
+                  {clipping.newspaper_date}
+                  {clipping.newspaper_page && ` · ${clipping.newspaper_page}`}
+                </p>
+              )}
+            </div>
+            <a
+              href={`/api/pdf/${clipping.id}`}
+              download={`newspaper-detective-${clipping.id}.pdf`}
+              className="btn-primary flex-shrink-0 self-start text-sm"
+            >
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              Download PDF
+            </a>
           </div>
-          <a
-            href={`/api/pdf/${clipping.id}`}
-            download={`newspaper-detective-${clipping.id}.pdf`}
-            className="btn-primary flex-shrink-0"
-          >
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            Download PDF
-          </a>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6">
