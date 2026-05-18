@@ -11,15 +11,6 @@ import EditableDetails from '@/components/results/EditableDetails'
 import AddStories from '@/components/results/AddStories'
 import ExpandableSection from '@/components/results/ExpandableSection'
 
-const STORY_NAMES: Record<string, string> = {
-  'ancestor-life': 'The Ancestor Life Story',
-  'place-story': 'The Place Story',
-  'historical-context': 'The Historical Context Story',
-  'day-in-the-life': 'The "Day in the Life" Story',
-  'timeline': 'The Timeline Story',
-  'evidence': 'The Evidence Story',
-  'life-moment': 'The Life Moment Story',
-}
 
 export default async function ResultPage({ params }: { params: { id: string } }) {
   const supabase = createClient()
@@ -108,20 +99,6 @@ export default async function ResultPage({ params }: { params: { id: string } })
               userDetails={clipping.user_details}
             />
 
-            {/* Story types used */}
-            {clipping.selected_story_types && clipping.selected_story_types.length > 0 && (
-              <div className="card p-5">
-                <h3 className="font-semibold text-brand-darker text-sm mb-3">Stories Generated</h3>
-                <div className="space-y-1.5">
-                  {clipping.selected_story_types.map((slug: string) => (
-                    <div key={slug} className="text-xs text-brand-gray-dark flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-brand-red flex-shrink-0"></span>
-                      {STORY_NAMES[slug] || slug}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Right column: reports */}
