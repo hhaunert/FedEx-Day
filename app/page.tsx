@@ -2,6 +2,9 @@ import Link from 'next/link'
 import Image from 'next/image'
 import Nav from '@/components/Nav'
 import { createClient } from '@/lib/supabase/server'
+import { readFileSync } from 'fs'
+import { join } from 'path'
+import FeatureExamples from '@/components/FeatureExamples'
 
 const defaultContent = {
   hero_headline: 'Uncover the Stories Hidden in Your Newspaper Clippings',
@@ -19,30 +22,16 @@ const defaultContent = {
     'Get actionable next steps: where to search next, name variants to try, and surrounding records to find.',
 }
 
-function FeatureCard({
-  icon,
-  title,
-  description,
-}: {
-  icon: React.ReactNode
-  title: string
-  description: string
-}) {
-  return (
-    <div className="card p-4 sm:p-6 md:p-8">
-      <div className="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center mb-5">
-        {icon}
-      </div>
-      <h3 className="font-serif text-xl font-bold text-brand-darker mb-3">{title}</h3>
-      <p className="text-brand-gray-dark leading-relaxed">{description}</p>
-    </div>
-  )
-}
 
 export default async function HomePage() {
   const content = defaultContent
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
+
+  const publicDir = join(process.cwd(), 'public')
+  const clueReport = JSON.parse(readFileSync(join(publicDir, 'Clue Report'), 'utf-8'))
+  const researchTrail = JSON.parse(readFileSync(join(publicDir, 'Research Trail'), 'utf-8'))
+  const storyPath = JSON.parse(readFileSync(join(publicDir, 'Story Path'), 'utf-8'))
 
   return (
     <div className="min-h-screen bg-white">
@@ -92,35 +81,11 @@ export default async function HomePage() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          <FeatureCard
-            icon={
-              <svg className="w-6 h-6 text-brand-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-              </svg>
-            }
-            title={content.feature_clue_report_title}
-            description={content.feature_clue_report_desc}
-          />
-          <FeatureCard
-            icon={
-              <svg className="w-6 h-6 text-brand-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-              </svg>
-            }
-            title={content.feature_research_trail_title}
-            description={content.feature_research_trail_desc}
-          />
-          <FeatureCard
-            icon={
-              <svg className="w-6 h-6 text-brand-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-              </svg>
-            }
-            title={content.feature_story_path_title}
-            description={content.feature_story_path_desc}
-          />
-        </div>
+        <FeatureExamples
+          clueReport={clueReport}
+          researchTrail={researchTrail}
+          storyPath={storyPath}
+        />
       </section>
 
       {/* How it works */}
