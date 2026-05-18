@@ -37,12 +37,63 @@ export default function AnalyzePage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
 
+  const parseFilename = (filename: string): Partial<NewspaperInfo> => {
+    // Remove extension
+    const name = filename.replace(/\.[^/.]+$/, '').replace(/[_-]/g, ' ')
+
+    // Try to find a page number
+    const pageMatch = name.match(/\bp(?:age)?\s*(\d+)\b/i)
+    const page = pageMatch ? `Page ${pageMatch[1]}` : ''
+
+    // Try to find a year (4 digits between 1800-2000)
+    const yearMatch = name.match(/\b(1[89]\d{2}|200\d)\b/)
+
+    // Try to find a month name
+    const months = ['january','february','march','april','may','june','july','august','september','october','november','december']
+    const monthMatch = name.match(new RegExp(`\\b(${months.join('|')})\\b`, 'i'))
+
+    // Try to find a day number
+    const dayMatch = name.match(/\b(\d{1,2})\b(?=.*(?:1[89]\d{2}|200\d))/)
+
+    let date = ''
+    if (monthMatch && yearMatch) {
+      const month = monthMatch[1].charAt(0).toUpperCase() + monthMatch[1].slice(1).toLowerCase()
+      date = dayMatch ? `${month} ${dayMatch[1]}, ${yearMatch[1]}` : `${month} ${yearMatch[1]}`
+    } else if (yearMatch) {
+      date = yearMatch[1]
+    }
+
+    // Remove page and date parts from name to get publication name
+    let pubName = name
+    if (pageMatch) pubName = pubName.replace(pageMatch[0], '')
+    if (monthMatch) pubName = pubName.replace(monthMatch[0], '')
+    if (yearMatch) pubName = pubName.replace(yearMatch[1], '')
+    if (dayMatch) pubName = pubName.replace(dayMatch[0], '')
+    pubName = pubName.replace(/\s+/g, ' ').replace(/[,\.]+/g, '').trim()
+
+    return {
+      newspaper_name: pubName || '',
+      newspaper_date: date,
+      newspaper_page: page,
+    }
+  }
+
   const handleFileSelect = async (file: File) => {
     setSelectedFile(file)
+
+    // Immediately parse what we can from the filename
+    const fromFilename = parseFilename(file.name)
+    if (fromFilename.newspaper_name || fromFilename.newspaper_date) {
+      setNewspaperInfo({
+        newspaper_name: fromFilename.newspaper_name || '',
+        newspaper_date: fromFilename.newspaper_date || '',
+        newspaper_page: fromFilename.newspaper_page || '',
+      })
+    }
+
     setIsExtracting(true)
 
     try {
-      // Extract newspaper info using AI via a lightweight endpoint
       const formData = new FormData()
       formData.append('image', file)
 
@@ -54,13 +105,14 @@ export default function AnalyzePage() {
       if (response.ok) {
         const data = await response.json()
         setNewspaperInfo({
-          newspaper_name: data.newspaper_name || '',
-          newspaper_date: data.date || '',
-          newspaper_page: data.page || '',
+          newspaper_name: data.newspaper_name || fromFilename.newspaper_name || '',
+          newspaper_date: data.date || fromFilename.newspaper_date || '',
+          newspaper_page: data.page || fromFilename.newspaper_page || '',
         })
       }
-    } catch {
-      // If extraction fails, proceed with empty fields
+    } catch (err) {
+      console.error('Extraction failed:', err)
+      // Keep the filename-parsed values if API fails
     } finally {
       setIsExtracting(false)
     }
