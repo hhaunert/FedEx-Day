@@ -177,6 +177,9 @@ export async function GET(
 
     if (error || !clipping) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
+    const sectionsParam = request.nextUrl.searchParams.get('sections')
+    const sections = sectionsParam ? new Set(sectionsParam.split(',')) : new Set(['clue-report', 'research-trail', 'story-path', 'transcription'])
+
     const clueReport = clipping.clue_report || {}
     const storyPath = clipping.story_path || {}
     const rt = clipping.research_trail || {}
@@ -211,14 +214,14 @@ export async function GET(
             </View>
           ) : null}
 
-          {clipping.transcription ? (
+          {sections.has('transcription') && clipping.transcription ? (
             <View style={styles.section}>
               <Text style={styles.sectionLabel}>TRANSCRIPTION</Text>
               <Text style={styles.body}>{safe(clipping.transcription)}</Text>
             </View>
           ) : null}
 
-          {clueReport.key_facts && clueReport.key_facts.length > 0 ? (
+          {sections.has('clue-report') && clueReport.key_facts && clueReport.key_facts.length > 0 ? (
             <View style={styles.section}>
               <Text style={styles.sectionLabel}>KEY FACTS</Text>
               {clueReport.key_facts.map((fact: string, i: number) => (
@@ -230,7 +233,7 @@ export async function GET(
             </View>
           ) : null}
 
-          {clueReport.people && clueReport.people.length > 0 ? (
+          {sections.has('clue-report') && clueReport.people && clueReport.people.length > 0 ? (
             <View style={styles.section}>
               <Text style={styles.sectionLabel}>PEOPLE</Text>
               {clueReport.people.map((p: { name: string; role?: string }, i: number) => (
@@ -251,7 +254,7 @@ export async function GET(
         </Page>
 
         {/* Page 2: Research Trail */}
-        <Page size="A4" style={styles.page}>
+        {sections.has('research-trail') ? <Page size="A4" style={styles.page}>
           <View style={styles.redBar} />
           <Text style={styles.brandName}>NEWSPAPERARCHIVE · NEWSPAPER DETECTIVE</Text>
           <Text style={styles.reportTitle}>Research Trail</Text>
@@ -324,10 +327,10 @@ export async function GET(
             <Text style={styles.footerText}>Newspaper Detective · NewspaperArchive</Text>
             <Text style={styles.footerText}>Research Trail</Text>
           </View>
-        </Page>
+        </Page> : null}
 
         {/* Story pages */}
-        {stories.map((story) => (
+        {sections.has('story-path') && stories.map((story) => (
           <Page key={story.slug} size="A4" style={styles.page}>
             <View style={styles.redBar} />
             <Text style={styles.brandName}>NEWSPAPERARCHIVE · NEWSPAPER DETECTIVE</Text>
