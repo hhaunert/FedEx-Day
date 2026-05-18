@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -13,6 +13,67 @@ interface Clipping {
   newspaper_date: string | null
   created_at: string
   status: string | null
+}
+
+function EditableTitle({ id, initialTitle, onSave }: { id: string; initialTitle: string | null; onSave: (id: string, title: string) => void }) {
+  const [editing, setEditing] = useState(false)
+  const [value, setValue] = useState(initialTitle || '')
+  const [saving, setSaving] = useState(false)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (editing) inputRef.current?.focus()
+  }, [editing])
+
+  const save = async () => {
+    setSaving(true)
+    await fetch(`/api/clippings/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: value }),
+    })
+    onSave(id, value)
+    setSaving(false)
+    setEditing(false)
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') save()
+    if (e.key === 'Escape') { setValue(initialTitle || ''); setEditing(false) }
+  }
+
+  if (editing) {
+    return (
+      <div className="flex items-center gap-1 mt-1" onClick={(e) => e.preventDefault()}>
+        <input
+          ref={inputRef}
+          type="text"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          onKeyDown={handleKeyDown}
+          onBlur={save}
+          maxLength={100}
+          className="text-xs border border-brand-red rounded px-2 py-0.5 w-full focus:outline-none"
+        />
+        {saving && <span className="text-xs text-brand-gray-mid flex-shrink-0">Saving...</span>}
+      </div>
+    )
+  }
+
+  return (
+    <div
+      className="flex items-center gap-1 group/title cursor-pointer mt-1"
+      onClick={(e) => { e.preventDefault(); setEditing(true) }}
+      title="Click to edit name"
+    >
+      <p className="text-xs text-brand-gray-mid truncate flex-1">
+        {value || <span className="italic text-brand-gray-border">Add a name...</span>}
+      </p>
+      <svg className="w-3 h-3 text-brand-gray-border opacity-0 group-hover/title:opacity-100 flex-shrink-0 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+      </svg>
+    </div>
+  )
 }
 
 export default function ClippingsGrid({ clippings: initial }: { clippings: Clipping[] }) {
@@ -30,6 +91,10 @@ export default function ClippingsGrid({ clippings: initial }: { clippings: Clipp
     }
     setDeletingId(null)
     setConfirmId(null)
+  }
+
+  const handleTitleSave = (id: string, title: string) => {
+    setClippings((prev) => prev.map((c) => c.id === id ? { ...c, title } : c))
   }
 
   if (clippings.length === 0) {
@@ -64,7 +129,7 @@ export default function ClippingsGrid({ clippings: initial }: { clippings: Clipp
             </svg>
           </button>
 
-          <Link href={`/result/${clipping.id}`} className="block hover:shadow-md transition-shadow duration-200">
+          <Link href={`/result/${clipping.id}`} className="block">
             <div className="aspect-[3/4] bg-white border-b border-brand-gray-border relative overflow-hidden">
               {clipping.image_url ? (
                 <Image
@@ -86,20 +151,30 @@ export default function ClippingsGrid({ clippings: initial }: { clippings: Clipp
                 </div>
               )}
             </div>
-            <div className="p-4">
-              <p className="font-semibold text-brand-darker text-sm truncate">
-                {clipping.title || clipping.newspaper_name || 'Untitled Analysis'}
+          </Link>
+
+          <div className="p-4">
+            <Link href={`/result/${clipping.id}`}>
+              <p className="font-semibold text-brand-darker text-sm truncate hover:text-brand-red transition-colors">
+                {clipping.newspaper_name || 'Unknown Newspaper'}
               </p>
               <p className="text-brand-gray-mid text-xs mt-0.5 truncate">
-                {clipping.newspaper_name && clipping.title ? clipping.newspaper_name : ''}{clipping.newspaper_date ? ` · ${clipping.newspaper_date}` : ''}
+                {clipping.newspaper_date || 'Date unknown'}
               </p>
-              <p className="text-brand-gray-border text-xs mt-2">
-                {new Date(clipping.created_at).toLocaleDateString('en-US', {
-                  year: 'numeric', month: 'short', day: 'numeric',
-                })}
-              </p>
-            </div>
-          </Link>
+            </Link>
+
+            <EditableTitle
+              id={clipping.id}
+              initialTitle={clipping.title}
+              onSave={handleTitleSave}
+            />
+
+            <p className="text-brand-gray-border text-xs mt-2">
+              {new Date(clipping.created_at).toLocaleDateString('en-US', {
+                year: 'numeric', month: 'short', day: 'numeric',
+              })}
+            </p>
+          </div>
 
           {/* Confirm delete overlay */}
           {confirmId === clipping.id && (
@@ -107,12 +182,7 @@ export default function ClippingsGrid({ clippings: initial }: { clippings: Clipp
               <p className="font-semibold text-brand-darker text-sm mb-1">Delete this analysis?</p>
               <p className="text-xs text-brand-gray-mid mb-4">This can't be undone.</p>
               <div className="flex gap-2">
-                <button
-                  onClick={() => setConfirmId(null)}
-                  className="btn-secondary text-xs px-3 py-1.5"
-                >
-                  Cancel
-                </button>
+                <button onClick={() => setConfirmId(null)} className="btn-secondary text-xs px-3 py-1.5">Cancel</button>
                 <button
                   onClick={() => handleDelete(clipping.id)}
                   disabled={deletingId === clipping.id}
