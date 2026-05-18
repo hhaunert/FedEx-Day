@@ -34,184 +34,157 @@ interface ResearchTrailProps {
   data: ResearchTrailData
 }
 
-const priorityBadge = {
-  high: 'bg-red-100 text-red-700',
-  medium: 'bg-yellow-100 text-yellow-700',
-  low: 'bg-gray-100 text-gray-600',
-}
-
-function Section({ title, icon, children }: { title: string; icon: React.ReactNode; children: React.ReactNode }) {
+function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
-    <div>
-      <h3 className="font-semibold text-brand-darker flex items-center gap-2 mb-4">
-        <span className="text-brand-red">{icon}</span>
-        {title}
-      </h3>
+    <h3 className="text-xs font-bold uppercase tracking-widest text-brand-red mb-4 pb-2 border-b border-brand-gray-border">
       {children}
-    </div>
+    </h3>
   )
 }
 
 export default function ResearchTrail({ data }: ResearchTrailProps) {
   if (data.raw) {
-    return (
-      <pre className="whitespace-pre-wrap text-sm text-brand-gray-dark">{data.raw}</pre>
-    )
+    return <pre className="whitespace-pre-wrap text-sm text-brand-gray-dark leading-relaxed">{data.raw}</pre>
   }
 
+  const hasQuickWins = data.quick_wins && data.quick_wins.length > 0
+  const hasSearches = data.next_searches && data.next_searches.length > 0
+  const hasVariants = data.name_variants && data.name_variants.length > 0
+  const hasAreas = data.surrounding_areas && data.surrounding_areas.length > 0
+  const hasTips = data.time_period_tips && data.time_period_tips.length > 0
+  const hasStrategies = data.long_term_strategies && data.long_term_strategies.length > 0
+
   return (
-    <div className="space-y-8">
-      {data.quick_wins && data.quick_wins.length > 0 && (
-        <Section
-          title="Quick Wins"
-          icon={
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-          }
-        >
-          <ul className="space-y-2">
-            {data.quick_wins.map((win, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm text-brand-gray-dark">
-                <span className="text-green-500 font-bold mt-0.5 flex-shrink-0">✓</span>
-                {win}
+    <div className="space-y-10">
+
+      {hasQuickWins && (
+        <div>
+          <SectionHeading>Start Here</SectionHeading>
+          <ol className="space-y-3">
+            {data.quick_wins!.map((win, i) => (
+              <li key={i} className="flex items-start gap-4">
+                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-brand-red text-white text-xs font-bold flex items-center justify-center mt-0.5">
+                  {i + 1}
+                </span>
+                <span className="text-brand-darker text-sm leading-relaxed">{win}</span>
               </li>
             ))}
-          </ul>
-        </Section>
+          </ol>
+        </div>
       )}
 
-      {data.next_searches && data.next_searches.length > 0 && (
-        <Section
-          title="Next Searches"
-          icon={
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          }
-        >
-          <div className="space-y-4">
-            {data.next_searches.map((search, i) => (
-              <div key={i} className="bg-brand-gray-light rounded-xl p-4 space-y-2">
-                <div className="flex items-start justify-between gap-3">
-                  <p className="font-semibold text-brand-darker text-sm">{search.record_type}</p>
-                  <span className={`badge capitalize flex-shrink-0 ${priorityBadge[search.priority] || priorityBadge.medium}`}>
-                    {search.priority}
-                  </span>
+      {hasSearches && (
+        <div>
+          <SectionHeading>Searches to Run</SectionHeading>
+          <ol className="space-y-5">
+            {data.next_searches!.map((search, i) => (
+              <li key={i} className="flex items-start gap-4">
+                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-brand-red text-white text-xs font-bold flex items-center justify-center mt-0.5">
+                  {(data.quick_wins?.length || 0) + i + 1}
+                </span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-brand-darker font-semibold text-sm">{search.record_type}</p>
+                  <p className="text-brand-gray-dark text-sm mt-0.5">
+                    <span className="font-medium">Where:</span> {search.repository}
+                  </p>
+                  {search.search_terms && (
+                    <p className="text-brand-gray-dark text-sm mt-0.5">
+                      <span className="font-medium">Search for:</span>{' '}
+                      <span className="italic">{search.search_terms}</span>
+                    </p>
+                  )}
+                  <p className="text-brand-gray-mid text-xs mt-1">{search.why}</p>
                 </div>
-                <p className="text-sm text-brand-gray-dark">
-                  <span className="font-medium text-brand-gray-dark">Where:</span> {search.repository}
-                </p>
-                <p className="text-sm text-brand-gray-dark">
-                  <span className="font-medium">Search for:</span>{' '}
-                  <span className="font-mono bg-white rounded px-1 py-0.5 border border-brand-gray-border text-xs">
-                    {search.search_terms}
-                  </span>
-                </p>
-                <p className="text-sm text-brand-gray-mid italic">{search.why}</p>
-              </div>
+              </li>
             ))}
-          </div>
-        </Section>
+          </ol>
+        </div>
       )}
 
-      {data.name_variants && data.name_variants.length > 0 && (
-        <Section
-          title="Name Variants to Try"
-          icon={
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-            </svg>
-          }
-        >
-          <div className="space-y-3">
-            {data.name_variants.map((variant, i) => (
-              <div key={i} className="bg-brand-gray-light rounded-lg p-4">
-                <div className="flex flex-wrap items-center gap-2 mb-2">
+      {hasVariants && (
+        <div>
+          <SectionHeading>Name Variants to Try</SectionHeading>
+          <div className="space-y-4">
+            {data.name_variants!.map((variant, i) => (
+              <div key={i}>
+                <div className="flex flex-wrap items-center gap-2 mb-1">
                   <span className="font-semibold text-brand-darker text-sm">{variant.original}</span>
                   <span className="text-brand-gray-mid text-sm">→</span>
                   {variant.variants.map((v, vi) => (
-                    <span key={vi} className="badge bg-white border border-brand-gray-border text-brand-darker text-xs">
+                    <span key={vi} className="text-xs bg-brand-gray-light border border-brand-gray-border rounded-full px-3 py-0.5 text-brand-darker">
                       {v}
                     </span>
                   ))}
                 </div>
-                <p className="text-xs text-brand-gray-mid">{variant.reason}</p>
-              </div>
-            ))}
-          </div>
-        </Section>
-      )}
-
-      {data.surrounding_areas && data.surrounding_areas.length > 0 && (
-        <Section
-          title="Surrounding Areas to Check"
-          icon={
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-          }
-        >
-          <div className="space-y-4">
-            {data.surrounding_areas.map((area, i) => (
-              <div key={i} className="bg-brand-gray-light rounded-xl p-4">
-                <p className="font-semibold text-brand-darker text-sm mb-1">{area.location}</p>
-                <p className="text-sm text-brand-gray-dark mb-2">{area.why_important}</p>
-                {area.records_to_check && area.records_to_check.length > 0 && (
-                  <div className="flex flex-wrap gap-1">
-                    {area.records_to_check.map((rec, ri) => (
-                      <span key={ri} className="text-xs bg-white border border-brand-gray-border rounded px-2 py-0.5 text-brand-gray-dark">
-                        {rec}
-                      </span>
-                    ))}
-                  </div>
+                {variant.reason && (
+                  <p className="text-xs text-brand-gray-mid pl-0">{variant.reason}</p>
                 )}
               </div>
             ))}
           </div>
-        </Section>
+        </div>
       )}
 
-      {data.time_period_tips && data.time_period_tips.length > 0 && (
-        <Section
-          title="Tips for This Time Period"
-          icon={
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          }
-        >
-          <ul className="space-y-2">
-            {data.time_period_tips.map((tip, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm text-brand-gray-dark">
-                <span className="text-brand-red mt-1 flex-shrink-0">→</span>
+      {hasAreas && (
+        <div>
+          <SectionHeading>Surrounding Areas to Check</SectionHeading>
+          <ul className="space-y-3">
+            {data.surrounding_areas!.map((area, i) => (
+              <li key={i} className="flex items-start gap-3">
+                <span className="flex-shrink-0 text-brand-red mt-1">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                  </svg>
+                </span>
+                <div>
+                  <span className="font-semibold text-brand-darker text-sm">{area.location}</span>
+                  {area.why_important && (
+                    <span className="text-brand-gray-dark text-sm"> — {area.why_important}</span>
+                  )}
+                  {area.records_to_check && area.records_to_check.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {area.records_to_check.map((rec, ri) => (
+                        <span key={ri} className="text-xs bg-brand-gray-light border border-brand-gray-border rounded px-2 py-0.5 text-brand-gray-dark">
+                          {rec}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {hasTips && (
+        <div>
+          <SectionHeading>Tips for This Era</SectionHeading>
+          <ul className="space-y-3">
+            {data.time_period_tips!.map((tip, i) => (
+              <li key={i} className="flex items-start gap-3 text-sm text-brand-darker leading-relaxed">
+                <span className="flex-shrink-0 text-brand-red font-bold mt-0.5">→</span>
                 {tip}
               </li>
             ))}
           </ul>
-        </Section>
+        </div>
       )}
 
-      {data.long_term_strategies && data.long_term_strategies.length > 0 && (
-        <Section
-          title="Long-Term Research Strategies"
-          icon={
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-            </svg>
-          }
-        >
-          <ul className="space-y-2">
-            {data.long_term_strategies.map((strategy, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm text-brand-gray-dark">
-                <span className="text-brand-mid-dark mt-1 flex-shrink-0">◆</span>
+      {hasStrategies && (
+        <div>
+          <SectionHeading>Long-Term Strategies</SectionHeading>
+          <ul className="space-y-3">
+            {data.long_term_strategies!.map((strategy, i) => (
+              <li key={i} className="flex items-start gap-3 text-sm text-brand-darker leading-relaxed">
+                <span className="flex-shrink-0 text-brand-gray-mid font-bold mt-0.5">◆</span>
                 {strategy}
               </li>
             ))}
           </ul>
-        </Section>
+        </div>
       )}
+
     </div>
   )
 }
