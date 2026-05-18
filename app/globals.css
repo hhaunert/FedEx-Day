@@ -1,0 +1,98 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-white text-brand-darker;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-6 py-3 bg-brand-red text-white font-semibold rounded-lg hover:bg-red-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-brand-red focus:ring-offset-2;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-6 py-3 bg-white text-brand-darker font-semibold rounded-lg border border-brand-gray-border hover:bg-brand-gray-light transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-brand-red focus:ring-offset-2;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center px-4 py-2 text-brand-gray-dark font-medium rounded-lg hover:bg-brand-gray-lighter transition-colors duration-200 focus:outline-none;
+  }
+
+  .card {
+    @apply bg-white rounded-xl border border-brand-gray-border shadow-sm;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-3 border border-brand-gray-border rounded-lg text-brand-darker placeholder-brand-gray-mid focus:outline-none focus:ring-2 focus:ring-brand-red focus:border-transparent transition-colors duration-200;
+  }
+
+  .label {
+    @apply block text-sm font-medium text-brand-gray-dark mb-1;
+  }
+
+  .section-title {
+    @apply font-serif text-2xl font-bold text-brand-darker;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+}
+
+/* Newspaper-inspired decorative elements */
+.newspaper-rule {
+  border: none;
+  border-top: 3px double #000;
+  margin: 1rem 0;
+}
+
+.newspaper-rule-thin {
+  border: none;
+  border-top: 1px solid #d7d8d9;
+  margin: 1rem 0;
+}
+
+/* Upload dropzone */
+.dropzone {
+  @apply border-2 border-dashed border-brand-gray-border rounded-xl p-12 text-center cursor-pointer transition-all duration-200 hover:border-brand-red hover:bg-red-50;
+}
+
+.dropzone.active {
+  @apply border-brand-red bg-red-50;
+}
+
+/* Progress bar */
+.progress-step {
+  @apply flex items-center;
+}
+
+.progress-step-dot {
+  @apply w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold border-2 transition-all duration-200;
+}
+
+.progress-step-dot.completed {
+  @apply bg-brand-red border-brand-red text-white;
+}
+
+.progress-step-dot.active {
+  @apply bg-white border-brand-red text-brand-red;
+}
+
+.progress-step-dot.pending {
+  @apply bg-white border-brand-gray-border text-brand-gray-mid;
+}
