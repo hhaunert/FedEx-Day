@@ -7,6 +7,7 @@ import ClueReport from '@/components/results/ClueReport'
 import StoryPath from '@/components/results/StoryPath'
 import ResearchTrail from '@/components/results/ResearchTrail'
 import EditableCitation from '@/components/results/EditableCitation'
+import EditableDetails from '@/components/results/EditableDetails'
 
 const STORY_NAMES: Record<string, string> = {
   'ancestor-life': 'The Ancestor Life Story',
@@ -95,6 +96,11 @@ export default async function ResultPage({ params }: { params: { id: string } })
               newspaperName={clipping.newspaper_name}
               newspaperDate={clipping.newspaper_date}
               newspaperPage={clipping.newspaper_page}
+            />
+
+            <EditableDetails
+              id={clipping.id}
+              userDetails={clipping.user_details}
             />
 
             {/* Story types used */}
