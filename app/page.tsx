@@ -78,7 +78,7 @@ export default async function HomePage() {
             Three Powerful Reports from Every Clipping
           </h2>
           <p className="text-brand-gray-dark text-lg max-w-2xl mx-auto">
-            Upload any newspaper clipping and our AI generates three distinct research outputs instantly.
+            One clipping. Three research reports. Instant results.
           </p>
         </div>
 
