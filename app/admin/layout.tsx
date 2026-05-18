@@ -26,24 +26,24 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   return (
     <div className="min-h-screen bg-brand-gray-light">
-      <nav className="bg-brand-darker text-white sticky top-0 z-50">
+      <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
           <div className="flex items-center gap-6">
             <Logo size="sm" href="/" />
-            <span className="text-white/40">|</span>
-            <span className="text-sm font-medium text-white/80">Admin</span>
+            <span className="text-gray-300">|</span>
+            <span className="text-sm font-medium text-gray-600">Admin</span>
           </div>
           <div className="flex items-center gap-4 text-sm">
-            <Link href="/admin" className="text-white/80 hover:text-white transition-colors">
+            <Link href="/admin" className="text-gray-600 hover:text-gray-900 transition-colors">
               Dashboard
             </Link>
-            <Link href="/admin/copy" className="text-white/80 hover:text-white transition-colors">
+            <Link href="/admin/copy" className="text-gray-600 hover:text-gray-900 transition-colors">
               Copy
             </Link>
-            <Link href="/admin/stories" className="text-white/80 hover:text-white transition-colors">
+            <Link href="/admin/stories" className="text-gray-600 hover:text-gray-900 transition-colors">
               Stories
             </Link>
-            <Link href="/admin/prompts" className="text-white/80 hover:text-white transition-colors">
+            <Link href="/admin/prompts" className="text-gray-600 hover:text-gray-900 transition-colors">
               Prompts
             </Link>
           </div>
