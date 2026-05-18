@@ -172,7 +172,7 @@ export default function AnalyzePage() {
         {/* Step content */}
         <div className="card p-6 sm:p-8">
           {currentStep === 1 && (
-            <StepUpload onFileSelect={handleFileSelect} selectedFile={selectedFile} />
+            <StepUpload onFileSelect={handleFileSelect} selectedFile={selectedFile} isExtracting={isExtracting} />
           )}
           {currentStep === 2 && (
             <StepNewspaperInfo
@@ -207,7 +207,7 @@ export default function AnalyzePage() {
             <button
               type="button"
               onClick={handleNext}
-              disabled={!canProceed() || isSubmitting || (currentStep === 2 && isExtracting)}
+              disabled={!canProceed() || isSubmitting || isExtracting}
               className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed min-w-[140px]"
             >
               {isSubmitting ? (
