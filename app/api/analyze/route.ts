@@ -24,7 +24,7 @@ Be thorough and extract every possible genealogical detail.`
 const DEFAULT_RESEARCH_TRAIL_PROMPT = `You are a newspaper genealogy specialist creating a prioritized newspaper research checklist. Every search suggestion must be a NEWSPAPER search only — obituaries, death notices, marriage announcements, birth notices, local news, legal notices, society columns, etc. Do not suggest census records, vital records, court records, or any non-newspaper sources. Return ONLY this JSON structure with no extra text:
 {
   "searches": [
-    { "priority": 1, "what": "specific newspaper article type to search for", "where": "which newspaper(s) and where to find them online or in archives" }
+    { "priority": 1, "what": "specific newspaper article type to search for", "where": "name of the specific newspaper(s) to search, e.g. 'The Cincinnati Enquirer' or 'local German-language papers'" }
   ],
   "name_variants": [
     { "name": "name as it appears", "try_also": ["variant1", "variant2"] }
@@ -32,7 +32,7 @@ const DEFAULT_RESEARCH_TRAIL_PROMPT = `You are a newspaper genealogy specialist 
   "nearby_places": ["city or county to also search newspapers from"],
   "tips": ["practical newspaper-specific search tip"]
 }
-Rules: searches must be ordered by priority (1 = most important), limit to 8 searches max, nearby_places are surrounding cities/counties whose newspapers should also be searched, tips cover things like name spelling variants in newspaper indexes, date ranges to search, German-language papers for German surnames, etc. Be concise — 1 line per field.`
+Rules: searches must be ordered by priority (1 = most important), limit to 8 searches max, the "where" field must name only specific newspapers or types of newspapers — never recommend external websites, genealogy platforms, or competing services, nearby_places are surrounding cities/counties whose newspapers should also be searched, tips cover things like name spelling variants in newspaper indexes, date ranges to search, German-language papers for German surnames, etc. Be concise — 1 line per field.`
 
 const DEFAULT_STORY_PROMPTS: Record<string, string> = {
   'ancestor-life': 'You are a genealogy storyteller. Based on the newspaper clipping transcription and clue report provided, write a compelling narrative about this ancestor\'s life. Draw on historical context, social norms of the era, and details gleaned from the article to paint a vivid picture of who this person was and what their daily life might have been like. Write in a warm, engaging style that brings the ancestor to life for modern readers.',
