@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Nav from '@/components/Nav'
 import { createClient } from '@/lib/supabase/server'
 import FeatureExamples from '@/components/FeatureExamples'
+import FAQ from '@/components/FAQ'
 
 const defaultContent = {
   hero_headline: 'Uncover the Stories Hidden in Your Newspaper Clippings',
@@ -167,6 +168,8 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      <FAQ />
 
       {/* Footer */}
       <footer className="border-t border-brand-gray-border py-8">
