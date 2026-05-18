@@ -4,7 +4,11 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 })
 
-export async function extractNewspaperInfo(imageBase64: string, mediaType: string = 'image/jpeg') {
+export async function extractNewspaperInfo(imageBase64: string, mediaType: string = 'image/jpeg', filename: string = '') {
+  const filenameHint = filename
+    ? `The image filename is: "${filename}". NewspaperArchive filenames often encode the publication name, date, and page — extract those details from the filename first, then verify or supplement with what you can see in the image.`
+    : ''
+
   const response = await anthropic.messages.create({
     model: 'claude-sonnet-4-6',
     max_tokens: 2048,
@@ -22,15 +26,17 @@ export async function extractNewspaperInfo(imageBase64: string, mediaType: strin
           },
           {
             type: 'text',
-            text: `Analyze this newspaper clipping. NewspaperArchive clippings typically show the publication name, date, and page number as a title bar at the top of the clipping — look there first. Extract the following and return ONLY a valid JSON object with no additional text or markdown:
+            text: `Analyze this newspaper clipping and extract publication details. ${filenameHint}
+
+Return ONLY a valid JSON object with no additional text or markdown:
 {
-  "newspaper_name": "Full name of the newspaper publication as printed (e.g. 'The Cincinnati Enquirer')",
-  "date": "Publication date as shown (e.g. 'January 15, 1923')",
-  "page": "Page number if visible (e.g. 'Page 3' or '3')",
+  "newspaper_name": "Full name of the newspaper publication (e.g. 'Greensburg New Era')",
+  "date": "Publication date (e.g. 'May 9, 1912')",
+  "page": "Page number (e.g. '1' or 'Page 1')",
   "transcription": "Full verbatim transcription of all article text in the clipping"
 }
 
-If any field cannot be determined from the image, use an empty string "".`,
+If any field cannot be determined from either the filename or the image, use an empty string "".`,
           },
         ],
       },

@@ -13,8 +13,9 @@ export async function POST(request: NextRequest) {
     const buffer = await imageFile.arrayBuffer()
     const base64 = Buffer.from(buffer).toString('base64')
     const mediaType = imageFile.type || 'image/jpeg'
+    const filename = imageFile.name || ''
 
-    const info = await extractNewspaperInfo(base64, mediaType)
+    const info = await extractNewspaperInfo(base64, mediaType, filename)
 
     return NextResponse.json(info)
   } catch (error) {
