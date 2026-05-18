@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import Nav from '@/components/Nav'
 import { createClient } from '@/lib/supabase/server'
 
@@ -48,10 +49,15 @@ export default async function HomePage() {
       <Nav />
 
       {/* Hero */}
-      <section
-        className="relative border-b border-brand-gray-border overflow-hidden"
-        style={{ backgroundImage: "url('/hero.png')", backgroundSize: 'cover', backgroundPosition: '-60% 40%' }}
-      >
+      <section className="relative border-b border-brand-gray-border overflow-hidden">
+        <Image
+          src="/hero.png"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center lg:object-[left_40%] xl:object-[-60%_40%]"
+        />
         <div className="absolute inset-0 bg-brand-gray-light/50" />
         <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 text-center">
           <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-brand-darker leading-tight mb-6">
