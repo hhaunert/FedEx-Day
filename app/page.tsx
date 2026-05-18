@@ -60,12 +60,9 @@ export default async function HomePage() {
             {content.hero_subheadline}
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="flex items-center justify-center">
             <Link href="/analyze" className="btn-primary text-base px-8 py-4">
               {content.cta_primary}
-            </Link>
-            <Link href="/auth" className="btn-secondary text-base px-8 py-4">
-              Sign In
             </Link>
           </div>
         </div>
