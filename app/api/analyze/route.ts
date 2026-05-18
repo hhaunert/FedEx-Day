@@ -68,9 +68,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No image provided' }, { status: 400 })
     }
 
-    if (storyTypeSlugs.length === 0) {
-      return NextResponse.json({ error: 'No story types selected' }, { status: 400 })
-    }
+
 
     // Convert image to base64
     const buffer = await imageFile.arrayBuffer()

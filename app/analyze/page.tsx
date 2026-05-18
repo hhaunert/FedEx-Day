@@ -72,10 +72,6 @@ export default function AnalyzePage() {
       setError('Please upload a clipping to continue.')
       return
     }
-    if (currentStep === 4 && selectedStories.length === 0) {
-      setError('Please select at least one story type.')
-      return
-    }
     if (currentStep < 4) {
       setCurrentStep(currentStep + 1)
     } else {
