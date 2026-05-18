@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 
 interface LogoProps {
   size?: 'sm' | 'md' | 'lg'
@@ -6,17 +7,22 @@ interface LogoProps {
 }
 
 export default function Logo({ size = 'md', href = '/' }: LogoProps) {
-  const sizeClasses = {
-    sm: 'text-lg',
-    md: 'text-2xl',
-    lg: 'text-4xl',
+  const dimensions = {
+    sm: { width: 150, height: 24 },
+    md: { width: 200, height: 31 },
+    lg: { width: 300, height: 47 },
   }
 
+  const { width, height } = dimensions[size]
+
   const content = (
-    <span className={`font-serif font-bold ${sizeClasses[size]}`}>
-      <span className="text-brand-black">Newspaper</span>
-      <span style={{ color: '#fc4040' }}>Archive</span>
-    </span>
+    <Image
+      src="/main-logo.svg"
+      alt="NewspaperArchive"
+      width={width}
+      height={height}
+      priority
+    />
   )
 
   if (href) {
