@@ -7,9 +7,9 @@ interface LogoProps {
 
 export default function Logo({ size = 'md', href = '/' }: LogoProps) {
   const dimensions = {
-    sm: { width: 150, height: 28 },
-    md: { width: 200, height: 37 },
-    lg: { width: 300, height: 56 },
+    sm: { width: 150, height: 26 },
+    md: { width: 200, height: 35 },
+    lg: { width: 300, height: 52 },
   }
 
   const { width, height } = dimensions[size]

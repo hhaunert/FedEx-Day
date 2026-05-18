@@ -1,7 +1,7 @@
 <svg
-  width="1400"
+  width="1500"
   height="260"
-  viewBox="0 0 1400 260"
+  viewBox="0 0 1500 260"
   fill="none"
   xmlns="http://www.w3.org/2000/svg"
   role="img"
@@ -15,14 +15,14 @@
       fill: #2b2b2b;
       font-family: "Inter", "Montserrat", "Avenir Next", Arial, sans-serif;
       font-weight: 800;
-      letter-spacing: -4px;
+      letter-spacing: -2px;
     }
 
     .word-red {
       fill: #ff3333;
       font-family: "Inter", "Montserrat", "Avenir Next", Arial, sans-serif;
       font-weight: 800;
-      letter-spacing: -4px;
+      letter-spacing: -2px;
     }
 
     .print-line {
@@ -42,7 +42,6 @@
 
   <!-- Fingerprint / newsprint mark -->
   <g transform="translate(45 35)">
-    <!-- outer fingerprint ridges -->
     <path class="print-line" d="M95 5 C45 8 10 42 8 91" />
     <path class="print-line" d="M118 8 C58 5 17 45 16 101" />
     <path class="print-line" d="M139 18 C72 4 24 45 24 111" />
@@ -50,19 +49,16 @@
     <path class="print-line" d="M169 58 C115 21 48 48 40 132" />
     <path class="print-line" d="M172 83 C137 41 66 45 51 139" />
 
-    <!-- lower and side ridges -->
     <path class="print-line" d="M17 121 C18 160 44 188 84 195" />
     <path class="print-line" d="M31 139 C36 170 59 186 94 188" />
     <path class="print-line" d="M48 151 C58 174 78 180 105 177" />
     <path class="print-line" d="M169 111 C163 154 134 184 92 195" />
     <path class="print-line" d="M157 132 C145 162 124 177 96 181" />
 
-    <!-- center whorl -->
     <path class="print-line" d="M82 151 C66 129 68 100 91 88 C113 76 139 90 142 116 C145 139 129 156 107 158" />
     <path class="print-line" d="M94 139 C84 125 87 109 100 102 C115 95 131 105 131 121 C131 136 119 145 104 144" />
     <path class="print-line" d="M105 129 C100 121 103 114 110 112 C118 110 124 115 124 123" />
 
-    <!-- ridge breaks / newspaper clipping texture -->
     <g>
       <line class="news-text" x1="20" y1="28" x2="58" y2="28" />
       <line class="news-text" x1="70" y1="27" x2="97" y2="27" />
@@ -96,5 +92,5 @@
 
   <!-- Wordmark -->
   <text x="260" y="165" font-size="112" class="word-dark">Newspaper</text>
-  <text x="815" y="165" font-size="112" class="word-red">Detective</text>
+  <text x="900" y="165" font-size="112" class="word-red">Detective</text>
 </svg>
