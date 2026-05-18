@@ -67,7 +67,7 @@ export default function Logo({ size = 'md', href = '/' }: LogoProps) {
       {/* Wordmark */}
       <span
         className="font-sans font-extrabold leading-none tracking-tight whitespace-nowrap"
-        style={{ fontSize: Math.round(28 * scale) }}
+        style={{ fontSize: Math.round(22 * scale) }}
       >
         <span className="text-brand-darker">Newspaper</span>
         <span className="text-brand-red"> Detective</span>
