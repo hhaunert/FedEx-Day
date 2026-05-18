@@ -3,9 +3,11 @@
 interface StepDetailsProps {
   value: string
   onChange: (value: string) => void
+  title: string
+  onTitleChange: (value: string) => void
 }
 
-export default function StepDetails({ value, onChange }: StepDetailsProps) {
+export default function StepDetails({ value, onChange, title, onTitleChange }: StepDetailsProps) {
   return (
     <div className="space-y-6">
       <div>
@@ -13,7 +15,25 @@ export default function StepDetails({ value, onChange }: StepDetailsProps) {
           Add What You Know
         </h2>
         <p className="text-brand-gray-dark">
-          Share any background information you already have about the people or events in this clipping. The AI will incorporate this into your analysis.
+          Give this analysis a name and share any background information you already have.
+        </p>
+      </div>
+
+      <div>
+        <label htmlFor="analysis_title" className="label">
+          Analysis Name <span className="text-brand-gray-mid font-normal">(optional)</span>
+        </label>
+        <input
+          id="analysis_title"
+          type="text"
+          value={title}
+          onChange={(e) => onTitleChange(e.target.value)}
+          placeholder="e.g. R.P. Hamilton Obituary, 1912"
+          className="input-field"
+          maxLength={100}
+        />
+        <p className="text-xs text-brand-gray-mid mt-1.5">
+          This name appears on your dashboard to help you find this analysis later.
         </p>
       </div>
 
@@ -25,8 +45,8 @@ export default function StepDetails({ value, onChange }: StepDetailsProps) {
           id="user_details"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          rows={8}
-          placeholder={`Examples:\n• The subject is my great-grandfather John Smith, born 1885 in County Cork, Ireland\n• He immigrated to Pennsylvania around 1905\n• He worked as a coal miner in Scranton\n• He married Mary O'Brien in 1910 and had 3 children`}
+          rows={7}
+          placeholder={`Examples:\n• The subject is my great-grandfather John Smith, born 1885 in County Cork, Ireland\n• He immigrated to Pennsylvania around 1905\n• He married Mary O'Brien in 1910 and had 3 children`}
           className="input-field resize-none"
         />
         <p className="text-xs text-brand-gray-mid mt-1.5">

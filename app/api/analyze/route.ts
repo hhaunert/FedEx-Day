@@ -62,6 +62,7 @@ export async function POST(request: NextRequest) {
     const newspaperDate = formData.get('newspaper_date') as string || ''
     const newspaperPage = formData.get('newspaper_page') as string || ''
     const userDetails = formData.get('user_details') as string || ''
+    const title = formData.get('title') as string || ''
     const storyTypeSlugs = formData.getAll('story_types') as string[]
 
     if (!imageFile) {
@@ -160,6 +161,7 @@ export async function POST(request: NextRequest) {
       .from('clippings')
       .insert({
         user_id: user.id,
+        title: title || null,
         image_url: imageUrl,
         newspaper_name: finalNewspaperName,
         newspaper_date: finalNewspaperDate,

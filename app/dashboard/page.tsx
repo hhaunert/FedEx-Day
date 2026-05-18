@@ -17,7 +17,7 @@ export default async function DashboardPage() {
 
   const { data: clippings } = await supabase
     .from('clippings')
-    .select('id, image_url, newspaper_name, newspaper_date, created_at, status')
+    .select('id, title, image_url, newspaper_name, newspaper_date, created_at, status')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
 

@@ -33,6 +33,7 @@ export default function AnalyzePage() {
     newspaper_page: '',
   })
   const [userDetails, setUserDetails] = useState('')
+  const [analysisTitle, setAnalysisTitle] = useState('')
   const [selectedStories, setSelectedStories] = useState<string[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
@@ -151,6 +152,7 @@ export default function AnalyzePage() {
       formData.append('newspaper_date', newspaperInfo.newspaper_date)
       formData.append('newspaper_page', newspaperInfo.newspaper_page)
       formData.append('user_details', userDetails)
+      formData.append('title', analysisTitle)
       selectedStories.forEach((s) => formData.append('story_types', s))
 
       const response = await fetch('/api/analyze', {
@@ -234,7 +236,12 @@ export default function AnalyzePage() {
             />
           )}
           {currentStep === 3 && (
-            <StepDetails value={userDetails} onChange={setUserDetails} />
+            <StepDetails
+              value={userDetails}
+              onChange={setUserDetails}
+              title={analysisTitle}
+              onTitleChange={setAnalysisTitle}
+            />
           )}
           {currentStep === 4 && (
             <StepStoryPicker selected={selectedStories} onChange={setSelectedStories} />

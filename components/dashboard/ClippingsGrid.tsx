@@ -7,6 +7,7 @@ import Image from 'next/image'
 
 interface Clipping {
   id: string
+  title: string | null
   image_url: string | null
   newspaper_name: string | null
   newspaper_date: string | null
@@ -87,10 +88,10 @@ export default function ClippingsGrid({ clippings: initial }: { clippings: Clipp
             </div>
             <div className="p-4">
               <p className="font-semibold text-brand-darker text-sm truncate">
-                {clipping.newspaper_name || 'Unknown Newspaper'}
+                {clipping.title || clipping.newspaper_name || 'Untitled Analysis'}
               </p>
               <p className="text-brand-gray-mid text-xs mt-0.5 truncate">
-                {clipping.newspaper_date || 'Date unknown'}
+                {clipping.newspaper_name && clipping.title ? clipping.newspaper_name : ''}{clipping.newspaper_date ? ` · ${clipping.newspaper_date}` : ''}
               </p>
               <p className="text-brand-gray-border text-xs mt-2">
                 {new Date(clipping.created_at).toLocaleDateString('en-US', {
