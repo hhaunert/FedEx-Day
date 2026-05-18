@@ -22,9 +22,9 @@ export async function extractNewspaperInfo(imageBase64: string, mediaType: strin
           },
           {
             type: 'text',
-            text: `Analyze this newspaper clipping and extract the following information. Return ONLY a valid JSON object with no additional text or markdown:
+            text: `Analyze this newspaper clipping. NewspaperArchive clippings typically show the publication name, date, and page number as a title bar at the top of the clipping — look there first. Extract the following and return ONLY a valid JSON object with no additional text or markdown:
 {
-  "newspaper_name": "Name of the newspaper publication",
+  "newspaper_name": "Full name of the newspaper publication as printed (e.g. 'The Cincinnati Enquirer')",
   "date": "Publication date as shown (e.g. 'January 15, 1923')",
   "page": "Page number if visible (e.g. 'Page 3' or '3')",
   "transcription": "Full verbatim transcription of all article text in the clipping"

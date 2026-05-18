@@ -24,7 +24,7 @@ export default function StepNewspaperInfo({ info, onChange, isLoading }: StepNew
           Review Newspaper Details
         </h2>
         <p className="text-brand-gray-dark">
-          Our AI has extracted the following details from your clipping. Please review and correct any errors.
+          We read these details from the title bar of your clipping. Correct anything that looks wrong.
         </p>
       </div>
 
@@ -45,7 +45,7 @@ export default function StepNewspaperInfo({ info, onChange, isLoading }: StepNew
             <svg className="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            AI has pre-filled these fields. Review and correct as needed before continuing.
+            Read from your clipping's title bar. Correct anything that looks off.
           </div>
 
           <div>
