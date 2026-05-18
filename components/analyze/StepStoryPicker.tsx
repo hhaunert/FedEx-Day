@@ -66,7 +66,7 @@ export default function StepStoryPicker({ selected, onChange }: StepStoryPickerP
           Choose Your Stories
         </h2>
         <p className="text-brand-gray-dark">
-          Select 1 to 3 story types. Each generates a unique narrative from your clipping.
+          Optional — select up to 3 story types and we&apos;ll write them for you.
         </p>
       </div>
 
