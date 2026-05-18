@@ -10,12 +10,6 @@ import storyPathData from '@/lib/examples/story-path.json'
 
 type ExampleKey = 'clue-report' | 'research-trail' | 'story-path'
 
-const DATA_MAP = {
-  'clue-report': clueReportData,
-  'research-trail': researchTrailData,
-  'story-path': storyPathData,
-}
-
 const TITLES: Record<ExampleKey, string> = {
   'clue-report': 'Clue Report Example',
   'research-trail': 'Research Trail Example',
@@ -23,7 +17,6 @@ const TITLES: Record<ExampleKey, string> = {
 }
 
 function ExampleModal({ type, onClose }: { type: ExampleKey; onClose: () => void }) {
-  const data = DATA_MAP[type]
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
@@ -49,9 +42,9 @@ function ExampleModal({ type, onClose }: { type: ExampleKey; onClose: () => void
           </button>
         </div>
         <div className="overflow-y-auto p-6">
-          {type === 'clue-report' && <ClueReport data={data} />}
-          {type === 'research-trail' && <ResearchTrail data={data} />}
-          {type === 'story-path' && <StoryPath data={data} />}
+          {type === 'clue-report' && <ClueReport data={clueReportData} />}
+          {type === 'research-trail' && <ResearchTrail data={researchTrailData} />}
+          {type === 'story-path' && <StoryPath data={storyPathData} />}
         </div>
       </div>
     </div>

@@ -12,9 +12,9 @@ export default function Nav() {
   const [loading, setLoading] = useState(true)
   const [menuOpen, setMenuOpen] = useState(false)
   const router = useRouter()
-  const supabase = createClient()
 
   useEffect(() => {
+    const supabase = createClient()
     supabase.auth.getUser().then(({ data: { user } }) => {
       setUser(user)
       setLoading(false)
@@ -28,6 +28,7 @@ export default function Nav() {
   }, [])
 
   const handleSignOut = async () => {
+    const supabase = createClient()
     await supabase.auth.signOut()
     router.push('/')
     router.refresh()
