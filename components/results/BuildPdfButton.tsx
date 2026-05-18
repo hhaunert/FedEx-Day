@@ -16,6 +16,12 @@ export default function BuildPdfButton({ id }: { id: string }) {
     new Set(SECTIONS.map((s) => s.id))
   )
 
+  const allSelected = selected.size === SECTIONS.length
+
+  const toggleAll = () => {
+    setSelected(allSelected ? new Set() : new Set(SECTIONS.map((s) => s.id)))
+  }
+
   const toggle = (id: string) => {
     setSelected((prev) => {
       const next = new Set(prev)
@@ -56,6 +62,18 @@ export default function BuildPdfButton({ id }: { id: string }) {
             <p className="text-sm text-brand-gray-dark mb-5">Choose which sections to include.</p>
 
             <div className="space-y-3 mb-6">
+              <label className="flex items-center gap-3 cursor-pointer group pb-3 border-b border-brand-gray-border">
+                <input
+                  type="checkbox"
+                  checked={allSelected}
+                  onChange={toggleAll}
+                  className="w-4 h-4 accent-brand-red rounded"
+                />
+                <span className="text-sm font-semibold text-brand-darker group-hover:text-brand-red transition-colors">
+                  {allSelected ? 'Unselect All' : 'Select All'}
+                </span>
+              </label>
+
               {SECTIONS.map((section) => (
                 <label
                   key={section.id}
