@@ -178,7 +178,7 @@ export async function GET(
     if (error || !clipping) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
     const sectionsParam = request.nextUrl.searchParams.get('sections')
-    const sections = sectionsParam ? new Set(sectionsParam.split(',')) : new Set(['clue-report', 'research-trail', 'story-path', 'transcription'])
+    const sections = sectionsParam ? new Set(sectionsParam.split(',')) : new Set(['clipping', 'clue-report', 'research-trail', 'story-path', 'transcription'])
 
     const clueReport = clipping.clue_report || {}
     const storyPath = clipping.story_path || {}
@@ -207,7 +207,7 @@ export async function GET(
           {citation ? <Text style={styles.citation}>{citation}</Text> : null}
           <View style={styles.divider} />
 
-          {clipping.image_url ? (
+          {sections.has('clipping') && clipping.image_url ? (
             <View style={styles.section}>
               <Text style={styles.sectionLabel}>CLIPPING</Text>
               <Image src={clipping.image_url} style={styles.clippingImage} />

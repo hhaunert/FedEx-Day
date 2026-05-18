@@ -3,6 +3,7 @@
 import { useState } from 'react'
 
 const SECTIONS = [
+  { id: 'clipping', label: 'Clipping Image' },
   { id: 'clue-report', label: 'Clue Report' },
   { id: 'research-trail', label: 'Research Trail' },
   { id: 'story-path', label: 'Story Path' },
