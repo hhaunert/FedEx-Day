@@ -8,6 +8,7 @@ import StoryPath from '@/components/results/StoryPath'
 import ResearchTrail from '@/components/results/ResearchTrail'
 import EditableCitation from '@/components/results/EditableCitation'
 import EditableDetails from '@/components/results/EditableDetails'
+import AddStories from '@/components/results/AddStories'
 
 const STORY_NAMES: Record<string, string> = {
   'ancestor-life': 'The Ancestor Life Story',
@@ -158,6 +159,11 @@ export default async function ResultPage({ params }: { params: { id: string } })
                 <StoryPath data={clipping.story_path} />
               </div>
             )}
+
+            <AddStories
+              id={clipping.id}
+              existingSlugs={clipping.selected_story_types || []}
+            />
 
             {/* Research Trail */}
             {clipping.research_trail && (
