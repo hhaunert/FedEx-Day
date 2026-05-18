@@ -50,11 +50,6 @@ export default async function HomePage() {
       {/* Hero */}
       <section className="bg-brand-gray-light border-b border-brand-gray-border">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 text-center">
-          <div className="inline-flex items-center gap-2 bg-white border border-brand-gray-border rounded-full px-4 py-2 mb-8 text-sm text-brand-gray-dark">
-            <span className="w-2 h-2 rounded-full bg-brand-red inline-block"></span>
-            Powered by NewspaperArchive &amp; Claude AI
-          </div>
-
           <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-brand-darker leading-tight mb-6">
             {content.hero_headline}
           </h1>
