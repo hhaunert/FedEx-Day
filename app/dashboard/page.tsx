@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import Nav from '@/components/Nav'
 import ClippingsGrid from '@/components/dashboard/ClippingsGrid'
+import ClearNotification from '@/components/dashboard/ClearNotification'
 
 export default async function DashboardPage() {
   const supabase = createClient()
@@ -23,6 +24,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-brand-gray-light">
+      <ClearNotification />
       <Nav />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">

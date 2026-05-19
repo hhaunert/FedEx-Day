@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Nav from '@/components/Nav'
+import { useAnalysisNotification } from '@/context/AnalysisNotification'
 import StepUpload from '@/components/analyze/StepUpload'
 import StepNewspaperInfo from '@/components/analyze/StepNewspaperInfo'
 import StepDetails from '@/components/analyze/StepDetails'
@@ -23,6 +24,7 @@ interface NewspaperInfo {
 
 export default function AnalyzePage() {
   const router = useRouter()
+  const { setNotification } = useAnalysisNotification()
 
   const [currentStep, setCurrentStep] = useState(1)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
@@ -168,6 +170,7 @@ export default function AnalyzePage() {
       }
 
       const { id } = await response.json()
+      setNotification()
       router.push(`/result/${id}`)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
