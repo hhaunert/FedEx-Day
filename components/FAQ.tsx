@@ -5,7 +5,7 @@ import { useState } from 'react'
 const FAQS = [
   {
     q: 'What is Newspaper Detective?',
-    a: 'Upload a photo of any newspaper clipping and our AI generates three research reports: a Clue Report (people, dates, places), a Research Trail (where to search next), and a Story Path (ancestor narratives in 7 formats).',
+    a: 'Upload a photo of any newspaper clipping and our AI generates three research reports: a Clue Report (people, dates, places), a Research Trail (where to search next), and a Story Path (ancestor narratives in 8 formats).',
   },
   {
     q: 'What file formats do you accept?',
@@ -21,11 +21,15 @@ const FAQS = [
   },
   {
     q: 'What is Story Path?',
-    a: 'Seven narrative formats that turn the raw clues into written stories about your ancestor — from a day-in-the-life account to a historical context essay.',
+    a: 'Eight narrative formats that turn the raw clues into written stories about your ancestor — from a day-in-the-life account to a social circle portrait of the people and community surrounding them.',
   },
   {
     q: 'How many story formats can I choose?',
-    a: 'You can generate all 7 story types for any clipping.',
+    a: 'You can generate any or all 8 story types for any clipping — there\'s no limit.',
+  },
+  {
+    q: 'Can I rerun an analysis?',
+    a: 'Yes — use the Rerun Analysis button on any result page to regenerate the Clue Report, Research Trail, and all stories. You can also save edits to the citation or known details and rerun in one step.',
   },
   {
     q: 'Can I download my results?',
@@ -33,7 +37,7 @@ const FAQS = [
   },
   {
     q: 'Can I edit the clipping details?',
-    a: 'Yes, you can correct the newspaper name, date, page, and state after the AI extracts them.',
+    a: 'Yes, you can correct the newspaper name, date, page, and state after the AI extracts them — and optionally rerun the analysis with the updated details.',
   },
   {
     q: 'Is my clipping data private?',

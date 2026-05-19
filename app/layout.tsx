@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import BugEasterEgg from '@/components/BugEasterEgg'
 import FlyingPigEasterEgg from '@/components/FlyingPigEasterEgg'
+import { AnalysisNotificationProvider } from '@/contexts/AnalysisNotificationContext'
 
 export const metadata: Metadata = {
   title: 'Newspaper Detective | NewspaperArchive',
@@ -22,9 +23,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen bg-white antialiased">
-        {children}
-        <BugEasterEgg />
-        <FlyingPigEasterEgg />
+        <AnalysisNotificationProvider>
+          {children}
+          <BugEasterEgg />
+          <FlyingPigEasterEgg />
+        </AnalysisNotificationProvider>
       </body>
     </html>
   )

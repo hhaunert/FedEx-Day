@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, Suspense } from 'react'
+import { useState, Suspense, useEffect, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { useAnalysisNotifications } from '@/contexts/AnalysisNotificationContext'
 import Nav from '@/components/Nav'
 import StepUpload from '@/components/analyze/StepUpload'
 import StepNewspaperInfo from '@/components/analyze/StepNewspaperInfo'
@@ -24,6 +25,9 @@ interface NewspaperInfo {
 
 function AnalyzeFlow() {
   const router = useRouter()
+  const { addNotification } = useAnalysisNotifications()
+  const isMountedRef = useRef(true)
+  useEffect(() => () => { isMountedRef.current = false }, [])
 
   const [currentStep, setCurrentStep] = useState(1)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
@@ -177,7 +181,11 @@ function AnalyzeFlow() {
       }
 
       const { id } = await response.json()
-      router.push(`/result/${id}`)
+      if (isMountedRef.current) {
+        router.push(`/result/${id}`)
+      } else {
+        addNotification(id)
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
       setIsSubmitting(false)
