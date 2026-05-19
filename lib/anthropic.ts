@@ -114,11 +114,16 @@ export async function generateClueReport(
 
   const text = response.content[0].type === 'text' ? response.content[0].text : '{}'
 
+  const cleaned = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
   try {
-    const cleaned = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
     return JSON.parse(cleaned)
   } catch {
-    return { raw: text }
+    // Try to extract a JSON object from anywhere in the response
+    const match = cleaned.match(/\{[\s\S]*\}/)
+    if (match) {
+      try { return JSON.parse(match[0]) } catch { /* fall through */ }
+    }
+    return {}
   }
 }
 
@@ -147,12 +152,11 @@ export async function generateResearchTrail(
     const cleaned = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
     return JSON.parse(cleaned)
   } catch {
-    // Try to extract partial JSON
     const match = text.match(/\{[\s\S]*\}/)
     if (match) {
       try { return JSON.parse(match[0]) } catch { /* fall through */ }
     }
-    return { raw: text }
+    return {}
   }
 }
 

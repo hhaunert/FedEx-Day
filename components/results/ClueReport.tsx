@@ -67,11 +67,11 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 export default function ClueReport({ data }: ClueReportProps) {
-  if (data.raw) {
+  if (data.raw || (!data.people && !data.dates && !data.places && !data.key_facts)) {
     return (
-      <div className="prose prose-sm max-w-none">
-        <pre className="whitespace-pre-wrap text-sm text-brand-gray-dark">{data.raw}</pre>
-      </div>
+      <p className="text-sm text-brand-gray-dark italic">
+        The clue report couldn&apos;t be parsed. Try running <strong>Rerun Analysis</strong> to regenerate it.
+      </p>
     )
   }
 
