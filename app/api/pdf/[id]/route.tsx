@@ -151,6 +151,7 @@ const STORY_NAMES: Record<string, string> = {
   'timeline': 'The Timeline Story',
   'evidence': 'The Evidence Story',
   'life-moment': 'The Life Moment Story',
+  'social-circle': 'The Social Circle Story',
 }
 
 function safe(val: unknown): string {

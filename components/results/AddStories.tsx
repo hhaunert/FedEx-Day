@@ -11,6 +11,7 @@ const STORY_TYPES = [
   { slug: 'timeline', name: 'The Timeline Story', description: 'Build a timeline of key events in your ancestor\'s life' },
   { slug: 'evidence', name: 'The Evidence Story', description: 'Analyze the clipping as genealogical evidence and assess its research value' },
   { slug: 'life-moment', name: 'The Life Moment Story', description: 'Focus on this single moment in time and its significance to the ancestor' },
+  { slug: 'social-circle', name: 'The Social Circle Story', description: 'Explore the people, organizations, and community connections surrounding your ancestor' },
 ]
 
 interface Props {

@@ -43,6 +43,12 @@ const STORY_TYPES = [
     description: 'Focus on this single moment in time and its significance to the ancestor',
     icon: '✨',
   },
+  {
+    slug: 'social-circle',
+    name: 'The Social Circle Story',
+    description: 'Explore the people, organizations, and community connections surrounding your ancestor',
+    icon: '🕸️',
+  },
 ]
 
 const LENGTHS = [
