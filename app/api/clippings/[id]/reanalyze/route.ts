@@ -6,7 +6,7 @@ import {
   generateStory,
 } from '@/lib/anthropic'
 
-const DEFAULT_CLUE_REPORT_PROMPT = `You are an expert genealogist analyzing a newspaper clipping. Extract all genealogical clues from the provided transcription and return a structured JSON object with the following fields:
+const DEFAULT_CLUE_REPORT_PROMPT = `You are an expert genealogist analyzing a newspaper clipping. Extract genealogical clues from the provided transcription and return a structured JSON object with the following fields:
 {
   "people": [{ "name": string, "role": string, "approximate_age": string, "relationship_to_subject": string }],
   "dates": [{ "date": string, "event": string, "certainty": "exact|approximate|inferred" }],
@@ -18,7 +18,7 @@ const DEFAULT_CLUE_REPORT_PROMPT = `You are an expert genealogist analyzing a ne
   "research_value": "high|medium|low",
   "notes": string
 }
-Be thorough and extract every possible genealogical detail.`
+Important: For clippings with large guest lists or many attendees (more than 20 names), include only the most genealogically significant people in the "people" array — hosts, family members, honorees, speakers, and officials. For the rest, add a single entry like { "name": "Guest list", "role": "invited guests", "approximate_age": "", "relationship_to_subject": "see notes" } and summarize the full list in the "notes" field with a total count. This keeps the JSON concise and parseable.`
 
 const DEFAULT_RESEARCH_TRAIL_PROMPT = `You are a newspaper genealogy specialist creating a prioritized newspaper research checklist. Every search suggestion must be a NEWSPAPER search only — obituaries, death notices, marriage announcements, birth notices, local news, legal notices, society columns, etc. Do not suggest census records, vital records, court records, or any non-newspaper sources. Return ONLY this JSON structure with no extra text:
 {
