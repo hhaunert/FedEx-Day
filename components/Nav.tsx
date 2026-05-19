@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import Logo from './Logo'
 import { createClient } from '@/lib/supabase/client'
 import type { User } from '@supabase/supabase-js'
@@ -12,7 +12,17 @@ export default function Nav() {
   const [loading, setLoading] = useState(true)
   const [menuOpen, setMenuOpen] = useState(false)
   const router = useRouter()
+  const pathname = usePathname()
   const supabase = createClient()
+
+  const handleNewAnalysis = () => {
+    setMenuOpen(false)
+    if (pathname === '/analyze') {
+      router.push('/analyze?new=' + Date.now())
+    } else {
+      router.push('/analyze')
+    }
+  }
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -42,9 +52,9 @@ export default function Nav() {
           <div className="hidden sm:flex items-center gap-4">
             {loading ? null : user ? (
               <>
-                <Link href="/analyze" className="btn-primary text-sm px-4 py-2">
+                <button onClick={handleNewAnalysis} className="btn-primary text-sm px-4 py-2">
                   New Analysis
-                </Link>
+                </button>
                 <Link href="/dashboard" className="btn-ghost text-sm">
                   Dashboard
                 </Link>
@@ -83,9 +93,9 @@ export default function Nav() {
           <div className="sm:hidden py-3 flex flex-col gap-2 border-t border-brand-gray-border">
             {!loading && user ? (
               <>
-                <Link href="/analyze" className="btn-primary text-base text-center py-3" onClick={() => setMenuOpen(false)}>
+                <button onClick={handleNewAnalysis} className="btn-primary text-base text-center py-3 w-full">
                   New Analysis
-                </Link>
+                </button>
                 <Link href="/dashboard" className="btn-ghost text-base text-center py-3" onClick={() => setMenuOpen(false)}>
                   Dashboard
                 </Link>

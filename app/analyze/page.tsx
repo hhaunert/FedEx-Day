@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Nav from '@/components/Nav'
 import StepUpload from '@/components/analyze/StepUpload'
 import StepNewspaperInfo from '@/components/analyze/StepNewspaperInfo'
@@ -22,7 +22,7 @@ interface NewspaperInfo {
   newspaper_state: string
 }
 
-export default function AnalyzePage() {
+function AnalyzeFlow() {
   const router = useRouter()
 
   const [currentStep, setCurrentStep] = useState(1)
@@ -318,4 +318,10 @@ export default function AnalyzePage() {
       </div>
     </div>
   )
+}
+
+export default function AnalyzePage() {
+  const searchParams = useSearchParams()
+  const key = searchParams.get('new') || 'default'
+  return <AnalyzeFlow key={key} />
 }
