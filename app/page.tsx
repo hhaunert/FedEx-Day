@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import Nav from '@/components/Nav'
 import { createClient } from '@/lib/supabase/server'
+import { createClient as createAdminClient } from '@supabase/supabase-js'
 import FeatureExamples from '@/components/FeatureExamples'
 import FAQ from '@/components/FAQ'
 
@@ -25,7 +26,12 @@ export default async function HomePage() {
   const content = defaultContent
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  const { count } = await supabase.from('clippings').select('*', { count: 'exact', head: true })
+
+  const adminClient = createAdminClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+  const { count } = await adminClient.from('clippings').select('*', { count: 'exact', head: true })
 
 
   return (
@@ -61,7 +67,7 @@ export default async function HomePage() {
           {count !== null && count > 0 && (
             <div className="mt-8">
               <p className="font-serif text-4xl sm:text-5xl font-bold text-brand-darker">{count.toLocaleString()}</p>
-              <p className="text-sm text-brand-gray-dark mt-1 uppercase tracking-widest">clippings analyzed</p>
+              <p className="text-sm text-brand-gray-dark mt-3 uppercase tracking-widest">clippings analyzed</p>
             </div>
           )}
         </div>
