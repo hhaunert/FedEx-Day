@@ -21,6 +21,7 @@ interface NewspaperInfo {
   newspaper_date: string
   newspaper_page: string
   newspaper_state: string
+  newspaper_country: string
 }
 
 function AnalyzeFlow() {
@@ -36,6 +37,7 @@ function AnalyzeFlow() {
     newspaper_date: '',
     newspaper_page: '',
     newspaper_state: '',
+    newspaper_country: '',
   })
   const [userDetails, setUserDetails] = useState('')
   const [analysisTitle, setAnalysisTitle] = useState('')
@@ -168,6 +170,7 @@ function AnalyzeFlow() {
     formData.append('newspaper_date', newspaperInfo.newspaper_date)
     formData.append('newspaper_page', newspaperInfo.newspaper_page)
     formData.append('newspaper_state', newspaperInfo.newspaper_state)
+    formData.append('newspaper_country', newspaperInfo.newspaper_country)
     formData.append('user_details', userDetails)
     formData.append('title', analysisTitle)
     selectedStories.forEach((s) => formData.append('story_types', s))

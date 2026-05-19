@@ -2,18 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-
-const US_STATES = [
-  'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado',
-  'Connecticut', 'Delaware', 'District of Columbia', 'Florida', 'Georgia',
-  'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky',
-  'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
-  'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
-  'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
-  'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina',
-  'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia',
-  'Washington', 'West Virginia', 'Wisconsin', 'Wyoming',
-]
+import { COUNTRIES, REGIONS, REGION_LABEL } from '@/lib/locations'
 
 interface Props {
   id: string
@@ -22,9 +11,10 @@ interface Props {
   newspaperDate: string | null
   newspaperPage: string | null
   newspaperState: string | null
+  newspaperCountry: string | null
 }
 
-export default function EditableCitation({ id, title, newspaperName, newspaperDate, newspaperPage, newspaperState }: Props) {
+export default function EditableCitation({ id, title, newspaperName, newspaperDate, newspaperPage, newspaperState, newspaperCountry }: Props) {
   const router = useRouter()
   const [editing, setEditing] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -38,14 +28,14 @@ export default function EditableCitation({ id, title, newspaperName, newspaperDa
     date: newspaperDate || '',
     page: newspaperPage || '',
     state: newspaperState || '',
+    country: newspaperCountry || '',
   })
 
   const [draft, setDraft] = useState(saved)
 
-  // Evidence Explained format:
-  // "Title," Newspaper Name (State), Date, p. Page.
   const buildCitation = (s: typeof saved) => {
-    const location = s.state ? `(${s.state})` : ''
+    const locationParts = [s.state, s.country && s.country !== 'United States' ? s.country : ''].filter(Boolean)
+    const location = locationParts.length ? `(${locationParts.join(', ')})` : ''
     const pub = [s.name, location].filter(Boolean).join(' ')
     const pageStr = s.page
       ? (s.page.toLowerCase().startsWith('p') ? s.page : `p. ${s.page}`)
@@ -53,8 +43,8 @@ export default function EditableCitation({ id, title, newspaperName, newspaperDa
     const parts = [pub, s.date, pageStr].filter(Boolean)
     const body = parts.join(', ')
     if (!title && !body) return ''
-    if (title && body) return `“${title},” ${body}.`
-    if (title) return `“${title}.”`
+    if (title && body) return `"${title}," ${body}.`
+    if (title) return `"${title}."`
     return `${body}.`
   }
 
@@ -74,6 +64,7 @@ export default function EditableCitation({ id, title, newspaperName, newspaperDa
         newspaper_date: draft.date,
         newspaper_page: draft.page,
         newspaper_state: draft.state,
+        newspaper_country: draft.country,
       }),
     })
     setSaving(false)
@@ -96,6 +87,10 @@ export default function EditableCitation({ id, title, newspaperName, newspaperDa
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
+
+  const draftCountry = draft.country || 'United States'
+  const regions = REGIONS[draftCountry]
+  const regionLabel = REGION_LABEL[draftCountry] || 'State'
 
   return (
     <div className="card p-5">
@@ -129,13 +124,29 @@ export default function EditableCitation({ id, title, newspaperName, newspaperDa
               placeholder="Newspaper name" autoFocus />
           </div>
           <div>
-            <label className="text-xs font-medium text-brand-darker block mb-1">State</label>
-            <select value={draft.state} onChange={(e) => setDraft((d) => ({ ...d, state: e.target.value }))}
-              className="w-full text-sm border border-brand-gray-border rounded-lg px-3 py-1.5 focus:outline-none focus:border-brand-red bg-white">
-              <option value="">Select a state...</option>
-              {US_STATES.map((s) => <option key={s} value={s}>{s}</option>)}
+            <label className="text-xs font-medium text-brand-darker block mb-1">Country</label>
+            <select
+              value={draft.country}
+              onChange={(e) => setDraft((d) => ({ ...d, country: e.target.value, state: '' }))}
+              className="w-full text-sm border border-brand-gray-border rounded-lg px-3 py-1.5 focus:outline-none focus:border-brand-red bg-white"
+            >
+              <option value="">Select a country...</option>
+              {COUNTRIES.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
+          {regions && (
+            <div>
+              <label className="text-xs font-medium text-brand-darker block mb-1">{regionLabel}</label>
+              <select
+                value={draft.state}
+                onChange={(e) => setDraft((d) => ({ ...d, state: e.target.value }))}
+                className="w-full text-sm border border-brand-gray-border rounded-lg px-3 py-1.5 focus:outline-none focus:border-brand-red bg-white"
+              >
+                <option value="">Select a {regionLabel.toLowerCase()}...</option>
+                {regions.map((r) => <option key={r} value={r}>{r}</option>)}
+              </select>
+            </div>
+          )}
           <div>
             <label className="text-xs font-medium text-brand-darker block mb-1">Date</label>
             <input type="text" value={draft.date} onChange={(e) => setDraft((d) => ({ ...d, date: e.target.value }))}
@@ -167,7 +178,7 @@ export default function EditableCitation({ id, title, newspaperName, newspaperDa
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
           </svg>
-          <span className="text-sm text-brand-gray-dark">Rerunning analysis with state context…</span>
+          <span className="text-sm text-brand-gray-dark">Rerunning analysis…</span>
         </div>
       ) : (
         <div>
@@ -175,7 +186,9 @@ export default function EditableCitation({ id, title, newspaperName, newspaperDa
             <p className="text-sm text-brand-gray-dark leading-relaxed">
               {title && <span>&ldquo;{title},&rdquo; </span>}
               {saved.name && <em>{saved.name}</em>}
-              {saved.state && <span> ({saved.state})</span>}
+              {(saved.state || (saved.country && saved.country !== 'United States')) && (
+                <span> ({[saved.state, saved.country && saved.country !== 'United States' ? saved.country : ''].filter(Boolean).join(', ')})</span>
+              )}
               {saved.date && <span>, {saved.date}</span>}
               {saved.page && <span>, {saved.page.toLowerCase().startsWith('p') ? saved.page : `p. ${saved.page}`}</span>}
               <span>.</span>

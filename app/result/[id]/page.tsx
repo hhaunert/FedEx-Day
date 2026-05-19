@@ -89,6 +89,7 @@ export default async function ResultPage({ params }: { params: { id: string } })
               newspaperDate={clipping.newspaper_date}
               newspaperPage={clipping.newspaper_page}
               newspaperState={clipping.newspaper_state}
+              newspaperCountry={clipping.newspaper_country}
             />
 
             <EditableDetails

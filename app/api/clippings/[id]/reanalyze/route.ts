@@ -84,6 +84,8 @@ export async function POST(
     storyTypesData?.forEach((s: { slug: string; ai_prompt: string }) => { storyPromptsMap[s.slug] = s.ai_prompt })
 
     const newspaperState = clipping.newspaper_state || ''
+    const newspaperCountry = clipping.newspaper_country || ''
+    const locationContext = [newspaperState, newspaperCountry].filter(Boolean).join(', ')
 
     const clueReport = await generateClueReport(
       transcription,
@@ -92,7 +94,7 @@ export async function POST(
       clipping.newspaper_date,
       clipping.newspaper_page,
       clipping.user_details,
-      newspaperState
+      locationContext
     )
 
     const [researchTrail, ...stories] = await Promise.all([
@@ -104,7 +106,7 @@ export async function POST(
           clipping.user_details || '',
           storyPromptsMap[slug] || DEFAULT_STORY_PROMPTS[slug] || '',
           slug,
-          newspaperState
+          locationContext
         )
       ),
     ])

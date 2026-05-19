@@ -64,6 +64,7 @@ export async function POST(request: NextRequest) {
     const newspaperDate = formData.get('newspaper_date') as string || ''
     const newspaperPage = formData.get('newspaper_page') as string || ''
     const newspaperState = formData.get('newspaper_state') as string || ''
+    const newspaperCountry = formData.get('newspaper_country') as string || ''
     const userDetails = formData.get('user_details') as string || ''
     const title = formData.get('title') as string || ''
     const storyTypeSlugs = formData.getAll('story_types') as string[]
@@ -137,6 +138,8 @@ export async function POST(request: NextRequest) {
     })
 
     // Step 2: Generate clue report
+    const locationContext = [newspaperState, newspaperCountry].filter(Boolean).join(', ')
+
     const clueReport = await generateClueReport(
       transcription,
       clueReportPrompt,
@@ -144,12 +147,12 @@ export async function POST(request: NextRequest) {
       finalNewspaperDate,
       finalNewspaperPage,
       userDetails,
-      newspaperState
+      locationContext
     )
 
     // Step 3: Parallel generation of research trail + stories
     const [researchTrail, ...stories] = await Promise.all([
-      generateResearchTrail(clueReport, transcription, researchTrailPrompt, newspaperState),
+      generateResearchTrail(clueReport, transcription, researchTrailPrompt, locationContext),
       ...storyTypeSlugs.map((slug) =>
         generateStory(
           transcription,
@@ -157,7 +160,7 @@ export async function POST(request: NextRequest) {
           userDetails,
           storyPromptsMap[slug] || DEFAULT_STORY_PROMPTS[slug] || '',
           slug,
-          newspaperState,
+          locationContext,
           storyLength
         )
       ),
@@ -176,6 +179,7 @@ export async function POST(request: NextRequest) {
         newspaper_date: finalNewspaperDate,
         newspaper_page: finalNewspaperPage,
         newspaper_state: newspaperState || null,
+        newspaper_country: newspaperCountry || null,
         transcription,
         user_details: userDetails,
         selected_story_types: storyTypeSlugs,

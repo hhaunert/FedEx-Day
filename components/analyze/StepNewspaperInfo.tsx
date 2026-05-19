@@ -1,22 +1,13 @@
 'use client'
 
-const US_STATES = [
-  'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado',
-  'Connecticut', 'Delaware', 'District of Columbia', 'Florida', 'Georgia',
-  'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky',
-  'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
-  'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
-  'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
-  'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina',
-  'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia',
-  'Washington', 'West Virginia', 'Wisconsin', 'Wyoming',
-]
+import { COUNTRIES, REGIONS, REGION_LABEL } from '@/lib/locations'
 
 interface NewspaperInfo {
   newspaper_name: string
   newspaper_date: string
   newspaper_page: string
   newspaper_state: string
+  newspaper_country: string
 }
 
 interface StepNewspaperInfoProps {
@@ -27,8 +18,15 @@ interface StepNewspaperInfoProps {
 
 export default function StepNewspaperInfo({ info, onChange, isLoading }: StepNewspaperInfoProps) {
   const handleChange = (field: keyof NewspaperInfo, value: string) => {
-    onChange({ ...info, [field]: value })
+    const updated = { ...info, [field]: value }
+    // Clear region when country changes
+    if (field === 'newspaper_country') updated.newspaper_state = ''
+    onChange(updated)
   }
+
+  const country = info.newspaper_country || 'United States'
+  const regions = REGIONS[country]
+  const regionLabel = REGION_LABEL[country]
 
   return (
     <div className="space-y-6">
@@ -62,9 +60,7 @@ export default function StepNewspaperInfo({ info, onChange, isLoading }: StepNew
           </div>
 
           <div>
-            <label htmlFor="newspaper_name" className="label">
-              Newspaper Name
-            </label>
+            <label htmlFor="newspaper_name" className="label">Newspaper Name</label>
             <input
               id="newspaper_name"
               type="text"
@@ -76,26 +72,43 @@ export default function StepNewspaperInfo({ info, onChange, isLoading }: StepNew
           </div>
 
           <div>
-            <label htmlFor="newspaper_state" className="label">
-              State <span className="text-brand-gray-mid font-normal">(optional)</span>
+            <label htmlFor="newspaper_country" className="label">
+              Country <span className="text-brand-gray-mid font-normal">(optional)</span>
             </label>
             <select
-              id="newspaper_state"
-              value={info.newspaper_state}
-              onChange={(e) => handleChange('newspaper_state', e.target.value)}
+              id="newspaper_country"
+              value={info.newspaper_country}
+              onChange={(e) => handleChange('newspaper_country', e.target.value)}
               className="input-field"
             >
-              <option value="">Select a state...</option>
-              {US_STATES.map((state) => (
-                <option key={state} value={state}>{state}</option>
+              <option value="">Select a country...</option>
+              {COUNTRIES.map((c) => (
+                <option key={c} value={c}>{c}</option>
               ))}
             </select>
           </div>
 
+          {regions && (
+            <div>
+              <label htmlFor="newspaper_state" className="label">
+                {regionLabel} <span className="text-brand-gray-mid font-normal">(optional)</span>
+              </label>
+              <select
+                id="newspaper_state"
+                value={info.newspaper_state}
+                onChange={(e) => handleChange('newspaper_state', e.target.value)}
+                className="input-field"
+              >
+                <option value="">Select a {regionLabel.toLowerCase()}...</option>
+                {regions.map((r) => (
+                  <option key={r} value={r}>{r}</option>
+                ))}
+              </select>
+            </div>
+          )}
+
           <div>
-            <label htmlFor="newspaper_date" className="label">
-              Publication Date
-            </label>
+            <label htmlFor="newspaper_date" className="label">Publication Date</label>
             <input
               id="newspaper_date"
               type="text"
@@ -107,9 +120,7 @@ export default function StepNewspaperInfo({ info, onChange, isLoading }: StepNew
           </div>
 
           <div>
-            <label htmlFor="newspaper_page" className="label">
-              Page Number
-            </label>
+            <label htmlFor="newspaper_page" className="label">Page Number</label>
             <input
               id="newspaper_page"
               type="text"
