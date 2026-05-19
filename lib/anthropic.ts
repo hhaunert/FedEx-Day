@@ -28,15 +28,16 @@ export async function extractNewspaperInfo(imageBase64: string, mediaType: strin
             type: 'text',
             text: `Analyze this newspaper clipping. ${filenameHint}
 
-Return ONLY a valid JSON object with exactly these four fields:
+Return ONLY a valid JSON object with exactly these five fields:
 {
   "newspaper_name": "Full name of the newspaper (e.g. 'Greensburg New Era')",
   "date": "Publication date (e.g. 'May 9, 1912')",
   "page": "Page number (e.g. 'Page 1')",
+  "article_headline": "The verbatim headline or title printed at the top of the article, if one is clearly visible (e.g. 'A Delightful Event in Juvenile Society'). Empty string if no headline is present.",
   "suggested_title": "A concise title for this analysis based on the article subject and type — include the main person's name and article type (e.g. 'R.P. Hamilton Obituary, 1912' or 'Smith-Jones Wedding, 1905' or 'Mill Street Fire, March 1898'). Never leave this empty — use the most prominent name or topic you can see."
 }
 
-Use empty string "" only for newspaper_name, date, and page if truly unknown. suggested_title must always have a value.`,
+Use empty string "" for any field that is truly unknown. suggested_title must always have a value.`,
           },
         ],
       },

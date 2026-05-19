@@ -6,9 +6,11 @@ interface StepDetailsProps {
   title: string
   onTitleChange: (value: string) => void
   suggestedTitle?: string
+  articleHeadline?: string
 }
 
-export default function StepDetails({ value, onChange, title, onTitleChange, suggestedTitle }: StepDetailsProps) {
+export default function StepDetails({ value, onChange, title, onTitleChange, suggestedTitle, articleHeadline }: StepDetailsProps) {
+  const suggestions = Array.from(new Set([articleHeadline, suggestedTitle].filter(Boolean))) as string[]
   return (
     <div className="space-y-6">
       <div>
@@ -33,15 +35,18 @@ export default function StepDetails({ value, onChange, title, onTitleChange, sug
           className="input-field"
           maxLength={100}
         />
-        {!title && suggestedTitle && (
+        {!title && suggestions.length > 0 && (
           <div className="mt-2 flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={() => onTitleChange(suggestedTitle)}
-              className="inline-flex items-center gap-1 text-xs bg-brand-red/10 text-brand-red hover:bg-brand-red hover:text-white border border-brand-red/30 hover:border-brand-red rounded-full px-3 py-1 transition-colors"
-            >
-              ✦ {suggestedTitle}
-            </button>
+            {suggestions.map((s) => (
+              <button
+                key={s}
+                type="button"
+                onClick={() => onTitleChange(s)}
+                className="inline-flex items-center gap-1 text-xs bg-brand-red/10 text-brand-red hover:bg-brand-red hover:text-white border border-brand-red/30 hover:border-brand-red rounded-full px-3 py-1 transition-colors"
+              >
+                ✦ {s}
+              </button>
+            ))}
           </div>
         )}
         <p className="text-xs text-brand-gray-mid mt-1.5">

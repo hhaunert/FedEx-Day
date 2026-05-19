@@ -37,6 +37,7 @@ function AnalyzeFlow() {
   const [userDetails, setUserDetails] = useState('')
   const [analysisTitle, setAnalysisTitle] = useState('')
   const [suggestedTitle, setSuggestedTitle] = useState('')
+  const [articleHeadline, setArticleHeadline] = useState('')
   const [selectedStories, setSelectedStories] = useState<string[]>([])
   const [storyLength, setStoryLength] = useState<'brief' | 'standard' | 'detailed'>('brief')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -117,6 +118,7 @@ function AnalyzeFlow() {
           newspaper_page: data.page || fromFilename.newspaper_page || '',
         }))
         if (data.suggested_title) setSuggestedTitle(data.suggested_title)
+        if (data.article_headline) setArticleHeadline(data.article_headline)
       }
     } catch (err) {
       console.error('Extraction failed:', err)
@@ -251,6 +253,7 @@ function AnalyzeFlow() {
               title={analysisTitle}
               onTitleChange={setAnalysisTitle}
               suggestedTitle={suggestedTitle || [newspaperInfo.newspaper_name, newspaperInfo.newspaper_date].filter(Boolean).join(', ')}
+              articleHeadline={articleHeadline}
             />
           )}
           {currentStep === 4 && (
