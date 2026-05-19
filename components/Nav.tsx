@@ -6,7 +6,7 @@ import { useRouter, usePathname } from 'next/navigation'
 import Logo from './Logo'
 import { createClient } from '@/lib/supabase/client'
 import type { User } from '@supabase/supabase-js'
-import { useAnalysisNotifications } from '@/contexts/AnalysisNotificationContext'
+import DashboardLink from './DashboardLink'
 
 export default function Nav() {
   const [user, setUser] = useState<User | null>(null)
@@ -15,7 +15,6 @@ export default function Nav() {
   const router = useRouter()
   const pathname = usePathname()
   const supabase = createClient()
-  const { notifications, clearNotifications } = useAnalysisNotifications()
 
   const handleNewAnalysis = () => {
     setMenuOpen(false)
@@ -57,14 +56,9 @@ export default function Nav() {
                 <button onClick={handleNewAnalysis} className="btn-primary text-sm px-4 py-2">
                   New Analysis
                 </button>
-                <Link href="/dashboard" className="btn-ghost text-sm relative" onClick={clearNotifications}>
+                <DashboardLink className="btn-ghost text-sm">
                   Dashboard
-                  {notifications.length > 0 && (
-                    <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-brand-red rounded-full flex items-center justify-center text-white text-[10px] font-bold leading-none">
-                      {notifications.length}
-                    </span>
-                  )}
-                </Link>
+                </DashboardLink>
                 <button
                   onClick={handleSignOut}
                   className="btn-ghost text-sm"
@@ -103,14 +97,9 @@ export default function Nav() {
                 <button onClick={handleNewAnalysis} className="btn-primary text-base text-center py-3 w-full">
                   New Analysis
                 </button>
-                <Link href="/dashboard" className="btn-ghost text-base text-center py-3 relative" onClick={() => { setMenuOpen(false); clearNotifications() }}>
+                <DashboardLink className="btn-ghost text-base text-center py-3 w-full" onClick={() => setMenuOpen(false)}>
                   Dashboard
-                  {notifications.length > 0 && (
-                    <span className="absolute top-2 right-4 w-4 h-4 bg-brand-red rounded-full flex items-center justify-center text-white text-[10px] font-bold leading-none">
-                      {notifications.length}
-                    </span>
-                  )}
-                </Link>
+                </DashboardLink>
                 <button onClick={() => { handleSignOut(); setMenuOpen(false) }} className="btn-ghost text-base py-3 w-full">
                   Sign Out
                 </button>

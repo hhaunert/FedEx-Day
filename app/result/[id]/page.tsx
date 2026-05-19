@@ -12,6 +12,7 @@ import AddStories from '@/components/results/AddStories'
 import ExpandableSection from '@/components/results/ExpandableSection'
 import BuildPdfButton from '@/components/results/BuildPdfButton'
 import RerunAnalysisButton from '@/components/results/RerunAnalysisButton'
+import DashboardLink from '@/components/DashboardLink'
 
 
 export default async function ResultPage({ params }: { params: { id: string } }) {
@@ -43,9 +44,9 @@ export default async function ResultPage({ params }: { params: { id: string } })
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {/* Header */}
         <div className="mb-8">
-          <Link href="/dashboard" className="text-sm text-brand-gray-mid hover:text-brand-darker transition-colors mb-3 inline-block">
+          <DashboardLink className="text-sm text-brand-gray-mid hover:text-brand-darker transition-colors mb-3 inline-block">
             ← Back to Dashboard
-          </Link>
+          </DashboardLink>
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
             <div>
               <h1 className="font-serif text-2xl sm:text-3xl font-bold text-brand-darker">

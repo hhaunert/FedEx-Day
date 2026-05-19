@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import Nav from '@/components/Nav'
+import DashboardLink from '@/components/DashboardLink'
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createAdminClient } from '@supabase/supabase-js'
 import FeatureExamples from '@/components/FeatureExamples'
@@ -184,7 +185,7 @@ export default async function HomePage() {
           <p>© {new Date().getFullYear()} NewspaperArchive. All rights reserved.</p>
           <div className="flex gap-6">
             {user ? (
-              <Link href="/dashboard" className="hover:text-brand-darker transition-colors">Dashboard</Link>
+              <DashboardLink className="hover:text-brand-darker transition-colors">Dashboard</DashboardLink>
             ) : (
               <Link href="/auth" className="hover:text-brand-darker transition-colors">Sign In</Link>
             )}
