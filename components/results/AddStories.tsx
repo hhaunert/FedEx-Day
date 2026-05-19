@@ -37,7 +37,7 @@ export default function AddStories({ id, existingSlugs }: Props) {
 
   const toggle = (slug: string) => {
     setSelected((prev) =>
-      prev.includes(slug) ? prev.filter((s) => s !== slug) : prev.length < 3 ? [...prev, slug] : prev
+      prev.includes(slug) ? prev.filter((s) => s !== slug) : [...prev, slug]
     )
   }
 
@@ -110,20 +110,17 @@ export default function AddStories({ id, existingSlugs }: Props) {
           <div className="grid sm:grid-cols-2 gap-3">
             {available.map((story) => {
               const isSelected = selected.includes(story.slug)
-              const isDisabled = !isSelected && selected.length >= 3
               return (
                 <button
                   key={story.slug}
                   type="button"
                   onClick={() => toggle(story.slug)}
-                  disabled={isDisabled || generating}
+                  disabled={generating}
                   className={`text-left p-4 rounded-xl border-2 transition-all duration-150 ${
                     isSelected
                       ? 'border-brand-red bg-red-50'
-                      : isDisabled
-                      ? 'border-brand-gray-border opacity-40 cursor-not-allowed'
                       : 'border-brand-gray-border hover:border-brand-red hover:bg-red-50 cursor-pointer'
-                  }`}
+                  } disabled:opacity-50`}
                 >
                   <div className="flex items-start gap-3">
                     <div className={`w-5 h-5 rounded flex-shrink-0 mt-0.5 border-2 flex items-center justify-center transition-colors ${
@@ -174,7 +171,7 @@ export default function AddStories({ id, existingSlugs }: Props) {
             >
               Cancel
             </button>
-            <span className="text-xs text-brand-gray-mid ml-auto">{selected.length} / 3 selected</span>
+            <span className="text-xs text-brand-gray-mid ml-auto">{selected.length} selected</span>
           </div>
         </div>
       )}

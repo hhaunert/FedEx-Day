@@ -68,7 +68,7 @@ export default function StepStoryPicker({ selected, onChange, storyLength, onLen
   const toggle = (slug: string) => {
     if (selected.includes(slug)) {
       onChange(selected.filter((s) => s !== slug))
-    } else if (selected.length < 3) {
+    } else {
       onChange([...selected, slug])
     }
   }
@@ -80,7 +80,7 @@ export default function StepStoryPicker({ selected, onChange, storyLength, onLen
           Choose Your Stories
         </h2>
         <p className="text-brand-gray-dark">
-          Optional — select up to 3 story types and we&apos;ll write them for you.
+          Optional — select any story types and we&apos;ll write them for you.
         </p>
       </div>
 
@@ -105,31 +105,18 @@ export default function StepStoryPicker({ selected, onChange, storyLength, onLen
         </div>
       </div>
 
-      <div className="flex items-center gap-3">
-        <span className="text-sm text-brand-gray-dark">
-          Selected: <strong className="text-brand-darker">{selected.length}</strong> / 3
-        </span>
-        {selected.length === 3 && (
-          <span className="badge bg-green-100 text-green-700">Maximum selected</span>
-        )}
-      </div>
-
       <div className="grid sm:grid-cols-2 gap-3">
         {STORY_TYPES.map((story) => {
           const isSelected = selected.includes(story.slug)
-          const isDisabled = !isSelected && selected.length >= 3
 
           return (
             <button
               key={story.slug}
               type="button"
               onClick={() => toggle(story.slug)}
-              disabled={isDisabled}
               className={`text-left p-4 rounded-xl border-2 transition-all duration-150 ${
                 isSelected
                   ? 'border-brand-red bg-red-50'
-                  : isDisabled
-                  ? 'border-brand-gray-border opacity-40 cursor-not-allowed'
                   : 'border-brand-gray-border hover:border-brand-red hover:bg-red-50 cursor-pointer'
               }`}
             >
