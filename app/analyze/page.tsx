@@ -293,7 +293,7 @@ function AnalyzeFlow() {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                   </svg>
-                  Analyzing...
+                  Analyzing your clipping...
                 </span>
               ) : currentStep === 4 ? (
                 'Generate Report →'
@@ -302,22 +302,13 @@ function AnalyzeFlow() {
               )}
             </button>
           </div>
+          {isSubmitting && (
+            <p className="text-sm text-brand-gray-mid text-center mt-4">
+              This may take 30–60 seconds.
+            </p>
+          )}
         </div>
 
-        {isSubmitting && (
-          <div className="mt-6 card p-6 text-center">
-            <div className="flex items-center justify-center gap-3 mb-3">
-              <svg className="animate-spin w-5 h-5 text-brand-red" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-              </svg>
-              <span className="font-medium text-brand-darker">AI is analyzing your clipping...</span>
-            </div>
-            <p className="text-sm text-brand-gray-dark">
-              This may take 30–60 seconds. We&apos;re generating your Clue Report, Stories, and Research Trail.
-            </p>
-          </div>
-        )}
       </div>
     </div>
   )
