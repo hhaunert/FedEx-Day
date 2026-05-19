@@ -169,27 +169,39 @@ export async function POST(request: NextRequest) {
     const storyPath = { stories }
 
     // Step 4: Save to database
-    const { data: clipping, error: insertError } = await supabase
+    const insertData: Record<string, unknown> = {
+      user_id: user.id,
+      title: title || null,
+      image_url: imageUrl,
+      newspaper_name: finalNewspaperName,
+      newspaper_date: finalNewspaperDate,
+      newspaper_page: finalNewspaperPage,
+      newspaper_state: newspaperState || null,
+      newspaper_country: newspaperCountry || null,
+      transcription,
+      user_details: userDetails,
+      selected_story_types: storyTypeSlugs,
+      clue_report: clueReport,
+      story_path: storyPath,
+      research_trail: researchTrail,
+      status: 'complete',
+    }
+
+    let { data: clipping, error: insertError } = await supabase
       .from('clippings')
-      .insert({
-        user_id: user.id,
-        title: title || null,
-        image_url: imageUrl,
-        newspaper_name: finalNewspaperName,
-        newspaper_date: finalNewspaperDate,
-        newspaper_page: finalNewspaperPage,
-        newspaper_state: newspaperState || null,
-        newspaper_country: newspaperCountry || null,
-        transcription,
-        user_details: userDetails,
-        selected_story_types: storyTypeSlugs,
-        clue_report: clueReport,
-        story_path: storyPath,
-        research_trail: researchTrail,
-        status: 'complete',
-      })
+      .insert(insertData)
       .select('id')
       .single()
+
+    // Graceful fallback if newspaper_country column doesn't exist yet
+    if (insertError && insertError.message?.includes('newspaper_country')) {
+      const { newspaper_country, ...insertDataWithoutCountry } = insertData
+      ;({ data: clipping, error: insertError } = await supabase
+        .from('clippings')
+        .insert(insertDataWithoutCountry)
+        .select('id')
+        .single())
+    }
 
     if (insertError) {
       console.error('Insert error:', insertError)
