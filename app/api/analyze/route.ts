@@ -187,21 +187,24 @@ export async function POST(request: NextRequest) {
       status: 'complete',
     }
 
-    let { data: clipping, error: insertError } = await supabase
+    let result = await supabase
       .from('clippings')
       .insert(insertData)
       .select('id')
       .single()
 
     // Graceful fallback if newspaper_country column doesn't exist yet
-    if (insertError && insertError.message?.includes('newspaper_country')) {
-      const { newspaper_country, ...insertDataWithoutCountry } = insertData
-      ;({ data: clipping, error: insertError } = await supabase
+    if (result.error && result.error.message?.includes('newspaper_country')) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { newspaper_country: _country, ...insertDataWithoutCountry } = insertData
+      result = await supabase
         .from('clippings')
         .insert(insertDataWithoutCountry)
         .select('id')
-        .single())
+        .single()
     }
+
+    const { data: clipping, error: insertError } = result
 
     if (insertError) {
       console.error('Insert error:', insertError)
