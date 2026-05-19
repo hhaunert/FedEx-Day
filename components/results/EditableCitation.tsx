@@ -30,6 +30,7 @@ export default function EditableCitation({ id, title, newspaperName, newspaperDa
   const [saving, setSaving] = useState(false)
   const [reanalyzing, setReanalyzing] = useState(false)
   const [error, setError] = useState(false)
+  const [saveMode, setSaveMode] = useState<'save' | 'rerun'>('save')
   const [copied, setCopied] = useState(false)
 
   const [saved, setSaved] = useState({
@@ -62,7 +63,7 @@ export default function EditableCitation({ id, title, newspaperName, newspaperDa
   const openEdit = () => { setDraft(saved); setError(false); setEditing(true) }
   const cancel = () => { setDraft(saved); setEditing(false) }
 
-  const save = async () => {
+  const save = async (withRerun = false) => {
     setSaving(true)
     setError(false)
     const res = await fetch(`/api/clippings/${id}`, {
@@ -78,11 +79,10 @@ export default function EditableCitation({ id, title, newspaperName, newspaperDa
     setSaving(false)
     if (!res.ok) { setError(true); return }
 
-    const stateChanged = draft.state !== saved.state
     setSaved(draft)
     setEditing(false)
 
-    if (stateChanged && draft.state) {
+    if (withRerun) {
       setReanalyzing(true)
       await fetch(`/api/clippings/${id}/reanalyze`, { method: 'POST' })
       setReanalyzing(false)
@@ -149,9 +149,12 @@ export default function EditableCitation({ id, title, newspaperName, newspaperDa
               placeholder="e.g. 1" />
           </div>
           {error && <p className="text-xs text-red-600">Failed to save. Please try again.</p>}
-          <div className="flex gap-2 pt-1">
-            <button onClick={save} disabled={saving} className="bg-brand-red text-white text-sm px-4 py-2 min-h-[40px] rounded-lg font-medium hover:bg-red-600 disabled:opacity-50">
-              {saving ? 'Saving...' : 'Save'}
+          <div className="flex flex-wrap gap-2 pt-1">
+            <button onClick={() => save(false)} disabled={saving} className="bg-brand-red text-white text-sm px-4 py-2 min-h-[40px] rounded-lg font-medium hover:bg-red-600 disabled:opacity-50">
+              {saving && saveMode === 'save' ? 'Saving...' : 'Save'}
+            </button>
+            <button onClick={() => { setSaveMode('rerun'); save(true) }} disabled={saving} className="text-sm px-4 py-2 min-h-[40px] rounded-lg border border-brand-red text-brand-red font-medium hover:bg-red-50 transition-colors disabled:opacity-50">
+              {saving && saveMode === 'rerun' ? 'Saving...' : 'Save & Rerun Analysis'}
             </button>
             <button onClick={cancel} disabled={saving} className="text-sm px-4 py-2 min-h-[40px] rounded-lg border border-brand-gray-border text-brand-gray-dark hover:border-brand-darker transition-colors disabled:opacity-50">
               Cancel

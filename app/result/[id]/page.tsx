@@ -11,6 +11,7 @@ import EditableDetails from '@/components/results/EditableDetails'
 import AddStories from '@/components/results/AddStories'
 import ExpandableSection from '@/components/results/ExpandableSection'
 import BuildPdfButton from '@/components/results/BuildPdfButton'
+import RerunAnalysisButton from '@/components/results/RerunAnalysisButton'
 
 
 export default async function ResultPage({ params }: { params: { id: string } }) {
@@ -57,7 +58,10 @@ export default async function ResultPage({ params }: { params: { id: string } })
                 </p>
               )}
             </div>
-            <BuildPdfButton id={clipping.id} />
+            <div className="flex items-center gap-3">
+              <RerunAnalysisButton id={clipping.id} />
+              <BuildPdfButton id={clipping.id} />
+            </div>
           </div>
         </div>
 

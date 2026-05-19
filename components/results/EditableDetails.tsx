@@ -12,6 +12,7 @@ export default function EditableDetails({ id, userDetails }: Props) {
   const router = useRouter()
   const [editing, setEditing] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [reanalyzing, setReanalyzing] = useState(false)
   const [error, setError] = useState(false)
   const [saved, setSaved] = useState(userDetails || '')
   const [draft, setDraft] = useState(saved)
@@ -27,7 +28,7 @@ export default function EditableDetails({ id, userDetails }: Props) {
     setEditing(false)
   }
 
-  const save = async () => {
+  const save = async (withRerun = false) => {
     setSaving(true)
     setError(false)
     const res = await fetch(`/api/clippings/${id}`, {
@@ -36,13 +37,18 @@ export default function EditableDetails({ id, userDetails }: Props) {
       body: JSON.stringify({ user_details: draft }),
     })
     setSaving(false)
-    if (res.ok) {
-      setSaved(draft)
-      setEditing(false)
-      router.refresh()
-    } else {
-      setError(true)
+    if (!res.ok) { setError(true); return }
+
+    setSaved(draft)
+    setEditing(false)
+
+    if (withRerun) {
+      setReanalyzing(true)
+      await fetch(`/api/clippings/${id}/reanalyze`, { method: 'POST' })
+      setReanalyzing(false)
     }
+
+    router.refresh()
   }
 
   return (
@@ -75,17 +81,33 @@ export default function EditableDetails({ id, userDetails }: Props) {
           {error && (
             <p className="text-xs text-red-600">Failed to save. Please try again.</p>
           )}
-          <div className="flex gap-2">
+          {reanalyzing && (
+            <p className="text-xs text-brand-gray-dark flex items-center gap-1.5">
+              <svg className="animate-spin w-3 h-3 text-brand-red flex-shrink-0" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+              Rerunning analysis…
+            </p>
+          )}
+          <div className="flex flex-wrap gap-2">
             <button
-              onClick={save}
-              disabled={saving}
+              onClick={() => save(false)}
+              disabled={saving || reanalyzing}
               className="bg-brand-red text-white text-xs px-3 py-1.5 rounded-lg font-medium hover:bg-red-600 disabled:opacity-50"
             >
               {saving ? 'Saving...' : 'Save'}
             </button>
             <button
+              onClick={() => save(true)}
+              disabled={saving || reanalyzing}
+              className="text-xs px-3 py-1.5 rounded-lg border border-brand-red text-brand-red font-medium hover:bg-red-50 transition-colors disabled:opacity-50"
+            >
+              Save & Rerun Analysis
+            </button>
+            <button
               onClick={cancel}
-              disabled={saving}
+              disabled={saving || reanalyzing}
               className="text-xs px-3 py-1.5 rounded-lg border border-brand-gray-border text-brand-gray-dark hover:border-brand-darker transition-colors disabled:opacity-50"
             >
               Cancel
