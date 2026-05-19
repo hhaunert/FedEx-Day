@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Nav from '@/components/Nav'
 import StepUpload from '@/components/analyze/StepUpload'
@@ -323,8 +323,16 @@ function AnalyzeFlow() {
   )
 }
 
-export default function AnalyzePage() {
+function AnalyzePageInner() {
   const searchParams = useSearchParams()
   const key = searchParams.get('new') || 'default'
   return <AnalyzeFlow key={key} />
+}
+
+export default function AnalyzePage() {
+  return (
+    <Suspense>
+      <AnalyzePageInner />
+    </Suspense>
+  )
 }
