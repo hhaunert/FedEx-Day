@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, Suspense, useEffect, useRef } from 'react'
+import { useState, Suspense, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useAnalysisNotifications } from '@/contexts/AnalysisNotificationContext'
 import Nav from '@/components/Nav'
@@ -25,9 +25,8 @@ interface NewspaperInfo {
 
 function AnalyzeFlow() {
   const router = useRouter()
-  const { addNotification } = useAnalysisNotifications()
-  const isMountedRef = useRef(true)
-  useEffect(() => () => { isMountedRef.current = false }, [])
+  const { startAnalysis, cancelRedirect } = useAnalysisNotifications()
+  useEffect(() => () => { cancelRedirect() }, [])
 
   const [currentStep, setCurrentStep] = useState(1)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
@@ -157,44 +156,28 @@ function AnalyzeFlow() {
     }
   }
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (!selectedFile) return
 
     setIsSubmitting(true)
     setError('')
 
-    try {
-      const formData = new FormData()
-      formData.append('image', selectedFile)
-      formData.append('newspaper_name', newspaperInfo.newspaper_name)
-      formData.append('newspaper_date', newspaperInfo.newspaper_date)
-      formData.append('newspaper_page', newspaperInfo.newspaper_page)
-      formData.append('newspaper_state', newspaperInfo.newspaper_state)
-      formData.append('user_details', userDetails)
-      formData.append('title', analysisTitle)
-      selectedStories.forEach((s) => formData.append('story_types', s))
-      formData.append('story_length', storyLength)
+    const formData = new FormData()
+    formData.append('image', selectedFile)
+    formData.append('newspaper_name', newspaperInfo.newspaper_name)
+    formData.append('newspaper_date', newspaperInfo.newspaper_date)
+    formData.append('newspaper_page', newspaperInfo.newspaper_page)
+    formData.append('newspaper_state', newspaperInfo.newspaper_state)
+    formData.append('user_details', userDetails)
+    formData.append('title', analysisTitle)
+    selectedStories.forEach((s) => formData.append('story_types', s))
+    formData.append('story_length', storyLength)
 
-      const response = await fetch('/api/analyze', {
-        method: 'POST',
-        body: formData,
-      })
-
-      if (!response.ok) {
-        const data = await response.json().catch(() => ({}))
-        throw new Error(data.error || 'Analysis failed. Please try again.')
-      }
-
-      const { id } = await response.json()
-      if (isMountedRef.current) {
-        router.push(`/result/${id}`)
-      } else {
-        addNotification(id)
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
-      setIsSubmitting(false)
-    }
+    startAnalysis(
+      formData,
+      (id) => router.push(`/result/${id}`),
+      (msg) => { setError(msg); setIsSubmitting(false) },
+    )
   }
 
   const canProceed = () => {
