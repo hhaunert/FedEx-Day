@@ -81,8 +81,13 @@ function AnalyzeFlow() {
     if (dayMatch) pubName = pubName.replace(dayMatch[0], '')
     pubName = pubName.replace(/\s+/g, ' ').replace(/[,\.]+/g, '').trim()
 
+    // Only use the leftover text as a publication name if the filename also
+    // contained at least a year or page number — otherwise it's probably an
+    // article title, not a publication/date/page string.
+    const looksLikeMetadata = !!(yearMatch || pageMatch)
+
     return {
-      newspaper_name: pubName || '',
+      newspaper_name: looksLikeMetadata ? pubName : '',
       newspaper_date: date,
       newspaper_page: page,
     }
