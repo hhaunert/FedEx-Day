@@ -51,6 +51,9 @@ export default function Nav() {
           <Logo size="md" />
 
           <div className="hidden sm:flex items-center gap-4">
+            <Link href="/church-records" className="btn-ghost text-sm">
+              Church Records
+            </Link>
             {loading ? null : user ? (
               <>
                 <button onClick={handleNewAnalysis} className="btn-primary text-sm px-4 py-2">
@@ -92,6 +95,9 @@ export default function Nav() {
         {/* Mobile menu */}
         {menuOpen && (
           <div className="sm:hidden py-3 flex flex-col gap-2 border-t border-brand-gray-border">
+            <Link href="/church-records" className="btn-ghost text-base text-center py-3 w-full" onClick={() => setMenuOpen(false)}>
+              Church Records
+            </Link>
             {!loading && user ? (
               <>
                 <button onClick={handleNewAnalysis} className="btn-primary text-base text-center py-3 w-full">
